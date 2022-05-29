@@ -1,0 +1,21 @@
+Server:
+  RunMode: debug
+  HttpPort: 8080
+  ReadTimeout: 60
+  WriteTimeout: 60
+
+App:
+  LogFileName: app
+  LogFileExt: .log
+
+Database:
+  DBType: mariadb
+  Username: root
+  Password: toor
+  Host: 127.0.0.1:3396
+  DBName: blog
+  TablePrefix: blog_
+  Charset: utf8
+  ParseTime: True
+  MaxIdleConns: 10
+  MaxIdOpenConns: 30
