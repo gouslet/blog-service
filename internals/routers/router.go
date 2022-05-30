@@ -4,7 +4,7 @@
  * Created At: Sunday, 2022/05/29 , 00:36:09                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Sunday, 2022/05/29 , 16:13:36                                *
+ * Last Modified: Monday, 2022/05/30 , 19:41:15                                *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -14,9 +14,12 @@
 package routers
 
 import (
+	_ "go_start/blog_service/docs"
 	v1 "go_start/blog_service/internals/routers/api/v1"
 
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	"github.com/swaggo/gin-swagger"
 )
 
 func NewRouter() *gin.Engine {
@@ -33,7 +36,10 @@ func NewRouter() *gin.Engine {
 		apiV1.PUT("/tags/:id", tag.Update)
 		apiV1.PATCH("/tags/:id/state", tag.List)
 		apiV1.GET("/tags", tag.Get)
+
 	}
+
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	return r
 }

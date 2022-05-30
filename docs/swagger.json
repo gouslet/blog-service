@@ -1,0 +1,14 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is a simple blog service based on golang,mariadb and okteto",
+        "title": "blog service",
+        "contact": {
+            "name": "Elchn"
+        },
+        "version": "v0.0"
+    },
+    "host": "https://blog-service-elchn.cloud.okteto.net",
+    "basePath": "/api/v1",
+    "paths": {}
+}
