@@ -4,7 +4,7 @@
  * Created At: Sunday, 2022/05/29 , 00:40:25                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Monday, 2022/05/30 , 21:24:11                                *
+ * Last Modified: Monday, 2022/05/30 , 21:43:38                                *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -30,7 +30,7 @@ func (t Tag) Get(c *gin.Context) {
 	app.NewResponse(c).ToErrorResponse(errcode.ServerError)
 }
 
-// @Summary get multiple tags
+// @Summary get a list of tags
 // @Produce json
 // @Param name query string false "tag name" maxlength(100)
 // @Param state query int false "state" Enum(0, 1) default(1)
