@@ -1,4 +1,28 @@
 basePath: /api/v1
+definitions:
+  errcode.Error:
+    type: object
+  model.Tag:
+    properties:
+      created_by:
+        type: string
+      created_on:
+        type: integer
+      deleted_on:
+        type: integer
+      id:
+        type: integer
+      is_del:
+        type: integer
+      modified_by:
+        type: string
+      modified_on:
+        type: integer
+      name:
+        type: string
+      state:
+        type: integer
+    type: object
 host: https://blog-service-elchn.cloud.okteto.net
 info:
   contact:
