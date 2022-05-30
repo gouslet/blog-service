@@ -4,7 +4,7 @@
  * Created At: Sunday, 2022/05/29 , 00:25:51                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Sunday, 2022/05/29 , 00:30:12                                *
+ * Last Modified: Monday, 2022/05/30 , 17:22:26                                *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -12,6 +12,16 @@
  * ----------	---	---------------------------------------------------------  *
  */
 package model
+
+import (
+	"fmt"
+	"go_start/blog_service/global"
+	"go_start/blog_service/pkg/setting"
+
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
+	"gorm.io/gorm/mysql"
+)
 
 // Model 公共Model
 type Model struct {
@@ -22,4 +32,34 @@ type Model struct {
 	ModifiedOn uint32 `json:"modified_on"`
 	DeletedOn  uint32 `json:"deleted_on"`
 	IsDel      uint8  `json:"is_del"`
+}
+
+func NewDBEngine(databaseSetting *setting.DatabaseSettings) (*gorm.DB, error) {
+	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=%s&parseTime=%t&loc=Local",
+		databaseSetting.Username,
+		databaseSetting.Password,
+		databaseSetting.Host,
+		databaseSetting.DBName,
+		databaseSetting.Charset,
+		databaseSetting.ParseTime)
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
+		Logger: logger.Default,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if global.ServerSetting.RunMode == "debug" {
+		db.Logger.LogMode(logger.Info)
+	}
+
+	if sdb, err := db.DB(); err != nil {
+		sdb.SetMaxOpenConns(databaseSetting.MaxIdOpenConns)
+	}
+
+	if sdb, err := db.DB(); err != nil {
+		sdb.SetMaxIdleConns(databaseSetting.MaxIdleConns)
+	}
+
+	return db, nil
 }
