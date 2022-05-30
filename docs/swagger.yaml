@@ -30,5 +30,42 @@ info:
   description: This is a simple blog service based on golang,mariadb and okteto
   title: blog service
   version: v0.0
-paths: {}
+paths:
+  /api/v1/tags:
+    get:
+      parameters:
+      - description: tag name
+        in: query
+        maxLength: 100
+        name: name
+        type: string
+      - default: 1
+        description: state
+        in: query
+        name: state
+        type: integer
+      - description: page index
+        in: query
+        name: page
+        type: integer
+      - description: size per page
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Succeeded
+          schema:
+            $ref: '#/definitions/model.Tag'
+        "400":
+          description: request errors
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: internal errors
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      summary: get multiple tags
 swagger: "2.0"
