@@ -4,7 +4,7 @@
  * Created At: Sunday, 2022/05/29 , 16:17:51                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Sunday, 2022/05/29 , 17:00:27                                *
+ * Last Modified: Monday, 2022/05/30 , 17:48:25                                *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -40,8 +40,16 @@ func (e *Error) Error() string {
 	return fmt.Sprintf("error code: %d, message: %s", e.code, e.msg)
 }
 
+func (e *Error) Code() int {
+	return e.code
+}
+
 func (e *Error) Msg() string {
 	return e.msg
+}
+
+func (e *Error) Msgf(args []any) string {
+	return fmt.Sprintf(e.msg, args...)
 }
 
 func (e *Error) Details() []string {
