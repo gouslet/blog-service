@@ -9,4 +9,4 @@ RUN go mod download && go mod verify
 COPY . .
 RUN go build -v -o /usr/local/bin/blog-service .
 # RUN go run . &
-# CMD ["blog-service"]
+CMD ["blog-service"]
