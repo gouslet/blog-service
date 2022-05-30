@@ -14,4 +14,7 @@ services:
       - 10000:8080
   
   blog-service:
+    build: .
+    ports:
+      - 8000:8000
     
