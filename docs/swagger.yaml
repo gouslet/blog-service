@@ -1,0 +1,10 @@
+basePath: /api/v1
+host: https://blog-service-elchn.cloud.okteto.net
+info:
+  contact:
+    name: Elchn
+  description: This is a simple blog service based on golang,mariadb and okteto
+  title: blog service
+  version: v0.0
+paths: {}
+swagger: "2.0"

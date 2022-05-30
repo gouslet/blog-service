@@ -4,7 +4,7 @@
  * Created At: Friday, 2022/05/27 , 20:47:27                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Monday, 2022/05/30 , 17:31:34                                *
+ * Last Modified: Monday, 2022/05/30 , 19:20:53                                *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -37,6 +37,13 @@ func init() {
 	}
 }
 
+// @title blog service
+// @version v0.0
+// @description This is a simple blog service based on golang,mariadb and okteto
+// @contact.name Elchn
+
+// @host https://blog-service-elchn.cloud.okteto.net
+// @BasePath /api/v1
 func main() {
 	gin.SetMode(global.ServerSetting.RunMode)
 	routers := routers.NewRouter()
