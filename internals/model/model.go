@@ -4,7 +4,7 @@
  * Created At: Sunday, 2022/05/29 , 00:25:51                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Monday, 2022/05/30 , 17:22:26                                *
+ * Last Modified: Monday, 2022/05/30 , 18:46:23                                *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -18,9 +18,9 @@ import (
 	"go_start/blog_service/global"
 	"go_start/blog_service/pkg/setting"
 
+	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
-	"gorm.io/gorm/mysql"
 )
 
 // Model 公共Model
