@@ -4,7 +4,7 @@
  * Created At: Sunday, 2022/05/29 , 00:40:25                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Monday, 2022/05/30 , 20:15:10                                *
+ * Last Modified: Monday, 2022/05/30 , 20:36:14                                *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -39,6 +39,7 @@ func (t Tag) Get(c *gin.Context) {
 // @Success 200 {object} model.Tag "Succeeded"
 // @Failure 400 {object} errcode.Error "request errors"
 // @Failure 500 {object} errcode.Error "internal errors"
+// @Router       /api/v1/tags [get]
 func (t Tag) List(c *gin.Context)   {}
 func (t Tag) Create(c *gin.Context) {}
 func (t Tag) Update(c *gin.Context) {}
