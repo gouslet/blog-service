@@ -4,7 +4,7 @@
  * Created At: Monday, 2022/05/30 , 17:37:21                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Monday, 2022/05/30 , 21:26:01                                *
+ * Last Modified: Tuesday, 2022/05/31 , 00:28:31                               *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -49,4 +49,18 @@ func (r *Response) ToErrorResponse(err *errcode.Error) {
 	}
 
 	r.Ctx.JSON(err.StatusCode(), response)
+}
+
+func (r *Response) ToResponseList(list any, totalRows int64) {
+	r.Ctx.JSON(
+		http.StatusOK,
+		gin.H{
+			"list": list,
+			"pager": Pager{
+				Page:      GetPage(r.Ctx),
+				PageSize:  GetPageSize(r.Ctx),
+				TotalRows: int(totalRows),
+			},
+		},
+	)
 }

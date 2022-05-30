@@ -5,8 +5,11 @@ Server:
   WriteTimeout: 60
 
 App:
+  LogPath: storage/logs
   LogFileName: app
   LogFileExt: .log
+  DefaultPageSize: 10
+  MaxPageSize: 100
 
 Database:
   DBType: mariadb

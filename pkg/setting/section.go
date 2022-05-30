@@ -4,7 +4,7 @@
  * Created At: Sunday, 2022/05/29 , 17:19:20                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Sunday, 2022/05/29 , 17:25:32                                *
+ * Last Modified: Tuesday, 2022/05/31 , 00:17:08                               *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -23,8 +23,11 @@ type ServerSettings struct {
 }
 
 type AppSettings struct {
-	LogFileName string
-	LogFileExt  string
+	LogPath         string
+	LogFileName     string
+	LogFileExt      string
+	DefaultPageSize int
+	MaxPageSize     int
 }
 
 type DatabaseSettings struct {
