@@ -4,7 +4,7 @@
  * Created At: Friday, 2022/05/27 , 20:47:27                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Sunday, 2022/05/29 , 17:35:43                                *
+ * Last Modified: Monday, 2022/05/30 , 17:31:34                                *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -15,6 +15,7 @@ package main
 
 import (
 	"go_start/blog_service/global"
+	"go_start/blog_service/internals/model"
 	"go_start/blog_service/internals/routers"
 	"go_start/blog_service/pkg/setting"
 	"log"
@@ -28,6 +29,11 @@ func init() {
 	err := setupSetting()
 	if err != nil {
 		log.Fatalf("init.setupSetting err: %v", err)
+	}
+
+	err = setupDBEngine()
+	if err != nil {
+		log.Fatalf("init.setupDBEngine err: %v", err)
 	}
 }
 
@@ -67,6 +73,17 @@ func setupSetting() error {
 
 	global.ServerSetting.ReadTimeout *= time.Second
 	global.ServerSetting.WriteTimeout *= time.Second
+
+	return nil
+}
+
+func setupDBEngine() error {
+	var err error
+	global.DBEngine, err = model.NewDBEngine(global.DatabaseSetting)
+
+	if err != nil {
+		return err
+	}
 
 	return nil
 }

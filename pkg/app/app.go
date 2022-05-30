@@ -1,36 +1,43 @@
 /*
- * File: \internal\routers\api\v1\tag.go                                       *
+ * File: \pkg\app\app.go                                                       *
  * Project: blog_service                                                       *
- * Created At: Sunday, 2022/05/29 , 00:40:25                                   *
+ * Created At: Monday, 2022/05/30 , 17:37:21                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Monday, 2022/05/30 , 17:42:17                                *
+ * Last Modified: Monday, 2022/05/30 , 17:46:31                                *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
  * Date      	By	Comments                                                   *
  * ----------	---	---------------------------------------------------------  *
  */
-package v1
+package app
 
 import (
-	"go_start/blog_service/pkg/app"
 	"go_start/blog_service/pkg/errcode"
 
 	"github.com/gin-gonic/gin"
 )
 
-type Tag struct{}
-
-func NewTag() Tag {
-	return Tag{}
+type Response struct {
+	Ctx *gin.Context
 }
 
-func (t Tag) Get(c *gin.Context) {
-	app.NewResponse(c).ToErrorResponse(errcode.ServerError)
+func NewResponse(ctx *gin.Context) *Response {
+	return &Response{Ctx: ctx}
 }
 
-func (t Tag) List(c *gin.Context)   {}
-func (t Tag) Create(c *gin.Context) {}
-func (t Tag) Update(c *gin.Context) {}
-func (t Tag) Delete(c *gin.Context) {}
+func (r *Response) ToErrorResponse(err *errcode.Error) {
+	response := gin.H{
+		"code": err.Code(),
+		"msg":  err.Msg(),
+	}
+
+	details := err.Details()
+
+	if len(details) > 0 {
+		response["details"] = details
+	}
+
+	r.Ctx.JSON(err.StatusCode(), response)
+}
