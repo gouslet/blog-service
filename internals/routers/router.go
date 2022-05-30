@@ -4,7 +4,7 @@
  * Created At: Sunday, 2022/05/29 , 00:36:09                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Monday, 2022/05/30 , 21:14:44                                *
+ * Last Modified: Monday, 2022/05/30 , 21:35:40                                *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -36,8 +36,8 @@ func NewRouter() *gin.Engine {
 		apiV1.POST("/tags", tag.Create)
 		apiV1.DELETE("/tags/:id", tag.Delete)
 		apiV1.PUT("/tags/:id", tag.Update)
-		apiV1.PATCH("/tags/:id/state", tag.List)
-		apiV1.GET("/tags", tag.Get)
+		apiV1.PATCH("/tags/:id/state", tag.Update)
+		apiV1.GET("/tags", tag.List)
 
 	}
 
