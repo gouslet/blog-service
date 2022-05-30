@@ -4,7 +4,7 @@
  * Created At: Sunday, 2022/05/29 , 00:25:51                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Monday, 2022/05/30 , 18:46:23                                *
+ * Last Modified: Monday, 2022/05/30 , 21:50:14                                *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -23,7 +23,7 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-// Model 公共Model
+// Model common model
 type Model struct {
 	ID         uint32 `gorm:"primary_key" json:"id"`
 	CreatedBy  string `json:"created_by"`

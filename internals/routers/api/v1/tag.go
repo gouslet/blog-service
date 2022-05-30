@@ -4,7 +4,7 @@
  * Created At: Sunday, 2022/05/29 , 00:40:25                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Monday, 2022/05/30 , 21:43:38                                *
+ * Last Modified: Tuesday, 2022/05/31 , 00:30:11                               *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -14,6 +14,7 @@
 package v1
 
 import (
+	"go_start/blog_service/internals/service"
 	"go_start/blog_service/pkg/app"
 	"go_start/blog_service/pkg/errcode"
 
@@ -41,10 +42,7 @@ func (t Tag) Get(c *gin.Context) {
 // @Failure 500 {object} errcode.Error "internal errors"
 // @Router       /api/v1/tags [get]
 func (t Tag) List(c *gin.Context) {
-	param := struct {
-		Name  string `form:"name" binding:"max=100"`
-		State uint8  `form:"state,default=1" binding:"oneof=0 1"`
-	}{}
+	param := service.TagListRequest{}
 
 	response := app.NewResponse(c)
 	valid, errs := app.BindAndValid(c, &param)
@@ -55,9 +53,27 @@ func (t Tag) List(c *gin.Context) {
 		return
 	}
 
-	response.ToResponse(gin.H{})
+	svc := service.New(c.Request.Context())
+	pager := app.Pager{
+		Page:     app.GetPage(c),
+		PageSize: app.GetPageSize(c),
+	}
+	totalRows, err := svc.CountTag(&service.CountTagRequest{
+		Name:  param.Name,
+		State: param.State,
+	})
+	if err != nil {
+		response.ToErrorResponse(errcode.ErrorCountTagFail)
+		return
+	}
 
-	return
+	tags, err := svc.GetTagList(&param, &pager)
+	if err != nil {
+		response.ToErrorResponse(errcode.ErrorGetTagListFail)
+		return
+	}
+
+	response.ToResponseList(tags, totalRows)
 }
 func (t Tag) Create(c *gin.Context) {}
 func (t Tag) Update(c *gin.Context) {}
