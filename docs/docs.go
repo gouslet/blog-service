@@ -23,7 +23,7 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
-                "summary": "get multiple tags",
+                "summary": "get a list of tags",
                 "parameters": [
                     {
                         "maxLength": 100,

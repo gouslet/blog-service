@@ -67,5 +67,5 @@ paths:
           description: internal errors
           schema:
             $ref: '#/definitions/errcode.Error'
-      summary: get multiple tags
+      summary: get a list of tags
 swagger: "2.0"
