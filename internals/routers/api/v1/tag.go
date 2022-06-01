@@ -4,7 +4,7 @@
  * Created At: Sunday, 2022/05/29 , 00:40:25                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Wednesday, 2022/06/1 , 20:31:05                              *
+ * Last Modified: Thursday, 2022/06/2 , 01:47:23                               *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -38,7 +38,7 @@ func (t Tag) Get(c *gin.Context) {
 // @Param state query int false "state" Enum(0, 1) default(1)
 // @Param page query int false "page index"
 // @Param page_size query int false "size per page"
-// @Success 200 {object} model.Tag "Succeeded"
+// @Success 200 {object} model.Tag "succeeded"
 // @Failure 400 {object} errcode.Error "request errors"
 // @Failure 500 {object} errcode.Error "internal errors"
 // @Router       /api/v1/tags [get]

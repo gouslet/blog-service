@@ -54,7 +54,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Succeeded",
+                        "description": "succeeded",
                         "schema": {
                             "$ref": "#/definitions/model.Tag"
                         }
@@ -82,13 +82,13 @@ const docTemplate = `{
         "model.Tag": {
             "type": "object",
             "properties": {
+                "created_at": {
+                    "type": "integer"
+                },
                 "created_by": {
                     "type": "string"
                 },
-                "created_on": {
-                    "type": "integer"
-                },
-                "deleted_on": {
+                "deleted_at": {
                     "type": "integer"
                 },
                 "id": {
@@ -97,11 +97,11 @@ const docTemplate = `{
                 "is_del": {
                     "type": "integer"
                 },
+                "modified_at": {
+                    "type": "integer"
+                },
                 "modified_by": {
                     "type": "string"
-                },
-                "modified_on": {
-                    "type": "integer"
                 },
                 "name": {
                     "type": "string"
@@ -117,7 +117,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "v0.0",
-	Host:             "https://blog-service-elchn.cloud.okteto.net",
+	Host:             "https://blog-service-poiyyort.cloud.okteto.net",
 	BasePath:         "/api/v1",
 	Schemes:          []string{},
 	Title:            "blog service",

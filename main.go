@@ -4,7 +4,7 @@
  * Created At: Friday, 2022/05/27 , 20:47:27                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Wednesday, 2022/06/1 , 20:33:08                              *
+ * Last Modified: Thursday, 2022/06/2 , 01:46:05                               *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -37,12 +37,14 @@ func init() {
 	}
 }
 
+//go:generate swag init --parseDependency --parseInternal -parseDepth=6
+
 // @title blog service
 // @version v0.0
 // @description This is a simple blog service based on golang,mariadb and okteto
 // @contact.name Elchn
 
-// @host https://blog-service-elchn.cloud.okteto.net
+// @host https://blog-service-poiyyort.cloud.okteto.net
 // @BasePath /api/v1
 func main() {
 	gin.SetMode(global.ServerSetting.RunMode)

@@ -4,26 +4,26 @@ definitions:
     type: object
   model.Tag:
     properties:
+      created_at:
+        type: integer
       created_by:
         type: string
-      created_on:
-        type: integer
-      deleted_on:
+      deleted_at:
         type: integer
       id:
         type: integer
       is_del:
         type: integer
+      modified_at:
+        type: integer
       modified_by:
         type: string
-      modified_on:
-        type: integer
       name:
         type: string
       state:
         type: integer
     type: object
-host: https://blog-service-elchn.cloud.okteto.net
+host: https://blog-service-poiyyort.cloud.okteto.net
 info:
   contact:
     name: Elchn
@@ -56,7 +56,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: Succeeded
+          description: succeeded
           schema:
             $ref: '#/definitions/model.Tag'
         "400":
