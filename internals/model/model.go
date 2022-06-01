@@ -4,7 +4,7 @@
  * Created At: Sunday, 2022/05/29 , 00:25:51                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Wednesday, 2022/06/1 , 20:32:28                              *
+ * Last Modified: Thursday, 2022/06/2 , 01:36:26                               *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -34,7 +34,7 @@ type Model struct {
 	CreatedAt  uint32                `json:"created_at"`
 	ModifiedAt uint32                `json:"modified_at"`
 	DeletedAt  uint32                `json:"deleted_at"`
-	IsDel      soft_delete.DeletedAt `gorm:"softDelete:flag"`
+	IsDel      soft_delete.DeletedAt `json:"is_del" gorm:"softDelete:flag"`
 }
 
 func NewDBEngine(databaseSetting *setting.DatabaseSettings) (*gorm.DB, error) {
