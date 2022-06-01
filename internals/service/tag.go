@@ -4,7 +4,7 @@
  * Created At: Monday, 2022/05/30 , 20:44:06                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Tuesday, 2022/05/31 , 00:10:14                               *
+ * Last Modified: Wednesday, 2022/06/1 , 20:15:27                              *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -51,4 +51,16 @@ func (svc *Service) GetTagList(param *TagListRequest, pager *app.Pager) ([]*mode
 
 func (svc *Service) CountTag(param *CountTagRequest) (int64, error) {
 	return svc.dao.CountTag(param.Name, param.State)
+}
+
+func (svc *Service) CreateTag(param *CreateTagRequest) error {
+	return svc.dao.CreateTag(param.Name, param.State, param.CreatedBy)
+}
+
+func (svc *Service) UpdateTag(param *UpdateTagRequest) error {
+	return svc.dao.UpdateTag(param.ID, param.Name, param.State, param.ModifiedBy)
+}
+
+func (svc *Service) DeleteTag(param *DeleteTagRequest) error {
+	return svc.dao.DeleteTag(param.ID)
 }

@@ -4,7 +4,7 @@
  * Created At: Tuesday, 2022/05/31 , 00:18:31                                  *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Tuesday, 2022/05/31 , 00:23:31                               *
+ * Last Modified: Wednesday, 2022/06/1 , 20:28:01                              *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -30,11 +30,12 @@ func (s StrTo) MustInt() int {
 	return v
 }
 
-func (s StrTo) Uint64() (uint64, error) {
-	return strconv.ParseUint(s.String(), 10, 64)
+func (s StrTo) Uint32() (uint32, error) {
+	u, err := strconv.ParseUint(s.String(), 10, 64)
+	return uint32(u), err
 }
 
-func (s StrTo) MustUint64() uint64 {
-	v, _ := s.Uint64()
+func (s StrTo) MustUint32() uint32 {
+	v, _ := s.Uint32()
 	return v
 }
