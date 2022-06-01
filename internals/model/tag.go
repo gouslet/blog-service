@@ -4,7 +4,7 @@
  * Created At: Sunday, 2022/05/29 , 00:25:51                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Monday, 2022/05/30 , 23:42:54                                *
+ * Last Modified: Wednesday, 2022/06/1 , 10:40:52                              *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -59,4 +59,17 @@ func (t Tag) List(db *gorm.DB, pageOffset, pageSize int) ([]*Tag, error) {
 	}
 
 	return tags, nil
+}
+
+func (t Tag) Create(db *gorm.DB) error {
+	return db.Create(&t).Error
+}
+
+func (t Tag) Update(db *gorm.DB) error {
+	db = db.Model(&Tag{}).Where("id = ? AND  is_del = ?", t.ID, 0)
+	return db.Save(&t).Error
+}
+
+func (t Tag) Delete(db *gorm.DB) error {
+	return db.Where("id = ? AND is_del", t.ID, 0).Delete(&t).Error
 }

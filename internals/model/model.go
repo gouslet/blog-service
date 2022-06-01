@@ -4,7 +4,7 @@
  * Created At: Sunday, 2022/05/29 , 00:25:51                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Monday, 2022/05/30 , 21:50:14                                *
+ * Last Modified: Wednesday, 2022/06/1 , 20:32:28                              *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -17,21 +17,24 @@ import (
 	"fmt"
 	"go_start/blog_service/global"
 	"go_start/blog_service/pkg/setting"
+	"reflect"
+	"time"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+	"gorm.io/plugin/soft_delete"
 )
 
 // Model common model
 type Model struct {
-	ID         uint32 `gorm:"primary_key" json:"id"`
-	CreatedBy  string `json:"created_by"`
-	ModifiedBy string `json:"modified_by"`
-	CreatedOn  uint32 `json:"created_on"`
-	ModifiedOn uint32 `json:"modified_on"`
-	DeletedOn  uint32 `json:"deleted_on"`
-	IsDel      uint8  `json:"is_del"`
+	ID         uint32                `gorm:"primary_key" json:"id"`
+	CreatedBy  string                `json:"created_by"`
+	ModifiedBy string                `json:"modified_by"`
+	CreatedAt  uint32                `json:"created_at"`
+	ModifiedAt uint32                `json:"modified_at"`
+	DeletedAt  uint32                `json:"deleted_at"`
+	IsDel      soft_delete.DeletedAt `gorm:"softDelete:flag"`
 }
 
 func NewDBEngine(databaseSetting *setting.DatabaseSettings) (*gorm.DB, error) {
@@ -61,5 +64,49 @@ func NewDBEngine(databaseSetting *setting.DatabaseSettings) (*gorm.DB, error) {
 		sdb.SetMaxIdleConns(databaseSetting.MaxIdleConns)
 	}
 
+	db.Callback().Create().Replace("gorm:update_time_stamp", updateTimeStampForCreateCallback)
+	db.Callback().Create().Replace("gorm:update_time_stamp", updateTimeStampForUpdateCallback)
+
 	return db, nil
+}
+
+func updateTimeStampForCreateCallback(db *gorm.DB) {
+	statement := db.Statement
+	context := statement.Context
+	for _, filed := range []string{"Modified", "CreatedOn"} {
+
+		timeField := statement.Schema.LookUpField(filed)
+		if !timeField.NotNull {
+			reflectValue := statement.ReflectValue
+			switch reflectValue.Kind() {
+			case reflect.Slice, reflect.Array:
+				for i := 0; i < reflectValue.Len(); i++ {
+					if _, isZero := timeField.ValueOf(context, reflectValue.Index(i)); isZero {
+						timeField.Set(context, reflectValue.Index(i), time.Now())
+					}
+				}
+			case reflect.Struct:
+				if _, isZero := timeField.ValueOf(context, reflectValue); isZero {
+					timeField.Set(context, reflectValue, time.Now())
+				}
+			}
+		}
+	}
+}
+
+func updateTimeStampForUpdateCallback(db *gorm.DB) {
+	statement := db.Statement
+
+	timeField := statement.Schema.LookUpField("gorm:update_column")
+	if !timeField.NotNull {
+		reflectValue := statement.ReflectValue
+		switch reflectValue.Kind() {
+		case reflect.Slice, reflect.Array:
+			for i := 0; i < reflectValue.Len(); i++ {
+				timeField.Set(statement.Context, reflectValue.Index(i), time.Now())
+			}
+		case reflect.Struct:
+			timeField.Set(statement.Context, reflectValue, time.Now())
+		}
+	}
 }

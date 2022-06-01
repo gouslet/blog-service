@@ -4,7 +4,7 @@
  * Created At: Sunday, 2022/05/29 , 00:40:25                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Tuesday, 2022/05/31 , 00:30:11                               *
+ * Last Modified: Wednesday, 2022/06/1 , 20:31:05                              *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -16,6 +16,7 @@ package v1
 import (
 	"go_start/blog_service/internals/service"
 	"go_start/blog_service/pkg/app"
+	"go_start/blog_service/pkg/convert"
 	"go_start/blog_service/pkg/errcode"
 
 	"github.com/gin-gonic/gin"
@@ -75,6 +76,64 @@ func (t Tag) List(c *gin.Context) {
 
 	response.ToResponseList(tags, totalRows)
 }
-func (t Tag) Create(c *gin.Context) {}
-func (t Tag) Update(c *gin.Context) {}
-func (t Tag) Delete(c *gin.Context) {}
+
+func (t Tag) Create(c *gin.Context) {
+	param := service.CreateTagRequest{}
+	response := app.NewResponse(c)
+	valid, err1 := app.BindAndValid(c, &param)
+
+	if !valid {
+		errResp := errcode.InvalidParams.WithDetails(err1.Errors()...)
+		response.ToErrorResponse(errResp)
+	}
+
+	svc := service.New(c.Request.Context())
+	err2 := svc.CreateTag(&param)
+	if err2 != nil {
+		response.ToErrorResponse(errcode.ErrorCreateTagFail)
+	}
+
+	response.ToResponse(gin.H{})
+}
+
+func (t Tag) Update(c *gin.Context) {
+	param := service.UpdateTagRequest{
+		ID: convert.StrTo(c.Param("id")).MustUint32(),
+	}
+	response := app.NewResponse(c)
+	valid, err1 := app.BindAndValid(c, &param)
+
+	if !valid {
+		errResp := errcode.InvalidParams.WithDetails(err1.Errors()...)
+		response.ToErrorResponse(errResp)
+	}
+
+	svc := service.New(c.Request.Context())
+	err2 := svc.UpdateTag(&param)
+	if err2 != nil {
+		response.ToErrorResponse(errcode.ErrorUpdateTagFail)
+	}
+
+	response.ToResponse(gin.H{})
+}
+
+func (t Tag) Delete(c *gin.Context) {
+	param := service.DeleteTagRequest{
+		ID: convert.StrTo(c.Param("id")).MustUint32(),
+	}
+	response := app.NewResponse(c)
+	valid, err1 := app.BindAndValid(c, &param)
+
+	if !valid {
+		errResp := errcode.InvalidParams.WithDetails(err1.Errors()...)
+		response.ToErrorResponse(errResp)
+	}
+
+	svc := service.New(c.Request.Context())
+	err2 := svc.DeleteTag(&param)
+	if err2 != nil {
+		response.ToErrorResponse(errcode.ErrorUpdateTagFail)
+	}
+
+	response.ToResponse(gin.H{})
+}

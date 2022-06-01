@@ -15,11 +15,11 @@ DROP TABLE IF EXISTS `blog_tag`;
 CREATE TABLE `blog_tag` (
   `id` int(10) NOT NULL,
   `name` varchar(100) NOT NULL DEFAULT '' COMMENT '标签名称',
-  `created_on` int(10) unsigned NOT NULL DEFAULT 0 COMMENT '创建时间',
+  `created_at` int(10) unsigned NOT NULL DEFAULT 0 COMMENT '创建时间',
   `created_by` varchar(100) NOT NULL DEFAULT '' COMMENT '创建人',
-  `modified_on` int(10) unsigned NOT NULL DEFAULT 0 COMMENT '修改时间',
+  `modified_at` int(10) unsigned NOT NULL DEFAULT 0 COMMENT '修改时间',
   `modified_by` varchar(100) NOT NULL DEFAULT '' COMMENT '修改人',
-  `deleted_on` int(10) unsigned NOT NULL DEFAULT 0 COMMENT '删除时间',
+  `deleted_at` int(10) unsigned NOT NULL DEFAULT 0 COMMENT '删除时间',
   `is_del` tinyint(3) unsigned NOT NULL DEFAULT 0 COMMENT '是否已删除 0 为未删除、1 为已删除'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

@@ -4,7 +4,7 @@
  * Created At: Friday, 2022/05/27 , 20:47:27                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Wednesday, 2022/06/1 , 01:05:56                              *
+ * Last Modified: Wednesday, 2022/06/1 , 20:33:08                              *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -31,10 +31,10 @@ func init() {
 		log.Fatalf("init.setupSetting err: %v", err)
 	}
 
-	// err = setupDBEngine()
-	// if err != nil {
-	// 	log.Fatalf("init.setupDBEngine err: %v", err)
-	// }
+	err = setupDBEngine()
+	if err != nil {
+		log.Fatalf("init.setupDBEngine err: %v", err)
+	}
 }
 
 // @title blog service
