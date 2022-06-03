@@ -3,7 +3,7 @@ version: '0.0'
 services:
   db:
     image: mariadb
-    restart: always
+    restart: on-failure
     environment:
       MARIADB_ROOT_PASSWORD: toor
     volumes:
@@ -11,7 +11,7 @@ services:
 
   adminer:
     image: adminer
-    restart: always
+    restart: on-failure
     ports:
       - 10000:8080
   
