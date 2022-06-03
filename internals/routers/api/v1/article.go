@@ -4,7 +4,7 @@
  * Created At: Sunday, 2022/05/29 , 00:40:25                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Friday, 2022/06/3 , 12:15:20                                 *
+ * Last Modified: Friday, 2022/06/3 , 19:51:26                                 *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -51,7 +51,7 @@ func (t Article) Get(c *gin.Context) {
 // @Failure 400 {object} errcode.Error "request errors"
 // @Failure 500 {object} errcode.Error "internal errors"
 // @Router       /api/v1/articles [get]
-func (t Article) List(c *gin.Context) {
+func (a Article) List(c *gin.Context) {
 	param := service.ArticleListRequest{}
 
 	response := app.NewResponse(c)

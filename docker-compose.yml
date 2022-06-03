@@ -3,16 +3,18 @@ version: '0.0'
 services:
   db:
     image: mariadb
-    deploy:
-      restart_policy:
-        condition: on-failure
-        max_attempts: 3
+    # deploy:
+    #   restart_policy:
+    #     condition: on-failure
+    #     max_attempts: 3
     environment:
       MARIADB_ROOT_PASSWORD: toor
     volumes:
       - ./sql:/docker-entrypoint-initdb.d
       # - type: tmpfs
       #   target: /docker-entrypoint-initdb.d
+    ports:
+      - 3306
 
   adminer:
     image: adminer
@@ -27,3 +29,9 @@ services:
     depends_on:
       - db
 # tmpfs: ./sql
+
+# endpoints:
+#   db:
+#     - path: /
+#       service: db
+#       port: 3306
