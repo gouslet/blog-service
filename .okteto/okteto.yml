@@ -39,4 +39,5 @@ dev:
       - /root/.cache/go-build/
 
 destroy:
-  - docker volume rm $(docker volume ls -q)
+  - docker volume ls -q
+  # - docker volume rm $(docker volume ls -q)
