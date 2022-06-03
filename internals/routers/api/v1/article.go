@@ -1,10 +1,10 @@
 /*
- * File: \internal\routers\api\v1\tag.go                                       *
- * Project: blog_service                                                       *
+ * File: \internal\routers\api\v1\article.go                                       *
+ * Project: blog-service                                                       *
  * Created At: Sunday, 2022/05/29 , 00:40:25                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Friday, 2022/06/3 , 19:51:26                                 *
+ * Last Modified: Friday, 2022/06/3 , 13:27:36                                 *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -30,8 +30,8 @@ func NewArticle() Article {
 
 // @Summary get an article with its title or id
 // @Produce json
-// @Param name id int false "tag id"
-// @Param name query string false "tag name" maxlength(100)
+// @Param id path int true "article id"
+// @Param name query string false "article name" maxlength(100)
 // @Param state query int false "state" Enum(0, 1) default(1)
 // @Success 200 {object} model.Article "succeeded"
 // @Failure 400 {object} errcode.Error "request errors"
@@ -88,16 +88,16 @@ func (a Article) List(c *gin.Context) {
 
 // @Summary create a new article
 // @Produce json
-// @Param title body string true "Title name" maxlength(100)
-// @Param desc body string true "Title name" maxlength(100)
-// @Param content body string true "Title name" maxlength(100)
-// @Param cover_image_url body string true "Title name" maxlength(100)
+// @Param title body string true "Article title" minlength(3) maxlength(100)
+// @Param desc body string true "Article description" maxlength(255)
+// @Param content body string true "Article content"
+// @Param cover_image_url body string true "Article cover image url" maxlength(255)
 // @Param state body int false "state" Enum(0, 1) default(1)
 // @Param created_by body string true "creator" minlength(3) maxlength(100)
-// @Success 200 {object} model.Tag "succeeded"
+// @Success 200 {object} model.Article "succeeded"
 // @Failure 400 {object} errcode.Error "request errors"
 // @Failure 500 {object} errcode.Error "internal errors"
-// @Router       /api/v1/tags [post]
+// @Router       /api/v1/articles [post]
 func (t Article) Create(c *gin.Context) {
 	param := service.CreateArticleRequest{}
 	response := app.NewResponse(c)
@@ -117,6 +117,19 @@ func (t Article) Create(c *gin.Context) {
 	response.ToResponse(gin.H{})
 }
 
+// @Summary update an article
+// @Produce json
+// @Param id path int true "article id"
+// @Param title body string false "Article title" minlength(3) maxlength(100)
+// @Param desc body string false "Article description" maxlength(255)
+// @Param content body string false "Article content"
+// @Param cover_image_url body string false "Article cover image url" maxlength(255)
+// @Param state body int false "state" Enum(0, 1) default(1)
+// @Param created_by body string true "creator" minlength(3) maxlength(100)
+// @Success 200 {object} model.Article "succeeded"
+// @Failure 400 {object} errcode.Error "request errors"
+// @Failure 500 {object} errcode.Error "internal errors"
+// @Router       /api/v1/articles/{id} [put]
 func (t Article) Update(c *gin.Context) {
 	param := service.UpdateArticleRequest{
 		ID: convert.StrTo(c.Param("id")).MustUint32(),
@@ -138,6 +151,14 @@ func (t Article) Update(c *gin.Context) {
 	response.ToResponse(gin.H{})
 }
 
+// @Summary delete an article with given title or id
+// @Produce json
+// @Param id path int true "article id"
+// @Param name query string false "article name" maxlength(100)
+// @Success 200 {object} model.Article "succeeded"
+// @Failure 400 {object} errcode.Error "request errors"
+// @Failure 500 {object} errcode.Error "internal errors"
+// @Router       /api/v1/articles/{id} [delete]
 func (t Article) Delete(c *gin.Context) {
 	param := service.DeleteArticleRequest{
 		ID: convert.StrTo(c.Param("id")).MustUint32(),
