@@ -39,4 +39,4 @@ dev:
       - /root/.cache/go-build/
 
 destroy:
-  - docker-compose down -v
+  - docker volume rm $(docker volume ls -q)
