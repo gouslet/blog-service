@@ -1,3 +1,5 @@
+USE `blog`;
+
 DROP TABLE IF EXISTS `blog_article_tag`;
 CREATE TABLE `blog_article_tag` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,

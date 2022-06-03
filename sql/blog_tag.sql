@@ -1,4 +1,5 @@
 -- Adminer 4.8.1 MySQL 5.5.5-10.8.3-MariaDB-1:10.8.3+maria~jammy dump
+USE `blog`;
 
 DROP TABLE IF EXISTS `blog_tag`;
 CREATE TABLE `blog_tag` (
