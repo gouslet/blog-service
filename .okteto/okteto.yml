@@ -37,7 +37,6 @@ dev:
     volumes:
       - /go/pkg/
       - /root/.cache/go-build/
-
-destroy:
-  - docker volume ls -q
-  # - docker volume rm $(docker volume ls -q)
+# destroy:
+# - docker volume ls -q
+# - docker volume rm $(docker volume ls -q)
