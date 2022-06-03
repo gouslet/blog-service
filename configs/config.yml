@@ -15,7 +15,8 @@ Database:
   DBType: mariadb
   Username: root
   Password: toor
-  Host: db:3306
+  # Host: db:3306
+  Host: 127.0.0.1:49154
   DBName: blog
   TablePrefix: blog_
   Charset: utf8

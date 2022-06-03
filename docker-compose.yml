@@ -1,4 +1,4 @@
-version: '0.0'
+# version: "0.0"
 
 services:
   db:
@@ -22,12 +22,12 @@ services:
     ports:
       - 10000:8080
   
-  blog-service:
-    build: .
-    ports:
-      - 8000:8000
-    depends_on:
-      - db
+  # blog-service:
+  #   build: .
+  #   ports:
+  #     - 8000:8000
+  #   depends_on:
+  #     - db
 # tmpfs: ./sql
 
 # endpoints:

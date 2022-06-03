@@ -21,6 +21,7 @@ CREATE TABLE `blog_tag` (
   `modified_at` int(10) unsigned NOT NULL DEFAULT 0 COMMENT '修改时间',
   `modified_by` varchar(100) NOT NULL DEFAULT '' COMMENT '修改人',
   `deleted_at` int(10) unsigned NOT NULL DEFAULT 0 COMMENT '删除时间',
+  `state` tinyint(3) unsigned NOT NULL DEFAULT 1 COMMENT '状态0为禁用，1为启用',
   `is_del` tinyint(3) unsigned NOT NULL DEFAULT 0 COMMENT '是否已删除 0 为未删除、1 为已删除'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4,COMMENT='标签管理';
 
@@ -32,6 +33,7 @@ CREATE TABLE `blog_article` (
   `cover_image_url` varchar(255) NOT NULL DEFAULT '''''' COMMENT '封面图片地址',
   `content` longtext NOT NULL COMMENT '文章内容',
   `state` tinyint(3) unsigned NOT NULL DEFAULT 1 COMMENT '状态0为禁用，1为启用',
+  `is_del` tinyint(3) unsigned NOT NULL DEFAULT 0 COMMENT '是否已删除 0 为未删除、1 为已删除',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='文章管理';
 
