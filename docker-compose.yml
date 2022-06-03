@@ -7,7 +7,7 @@ services:
     environment:
       MARIADB_ROOT_PASSWORD: toor
     volumes:
-      ./sql: /docker-entrypoint-initdb.d
+      - ./sql: /docker-entrypoint-initdb.d
 
   adminer:
     image: adminer
