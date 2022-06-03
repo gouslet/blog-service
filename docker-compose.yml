@@ -11,20 +11,21 @@ services:
       MARIADB_ROOT_PASSWORD: toor
     volumes:
       - ./sql:/docker-entrypoint-initdb.d
+    # command: ls /usr/local
       # - type: tmpfs
       #   target: /docker-entrypoint-initdb.d
 
-  adminer:
-    image: adminer
-    restart: on-failure
-    ports:
-      - 10000:8080
+  # adminer:
+  #   image: adminer
+  #   restart: on-failure
+  #   ports:
+  #     - 10000:8080
   
-  blog-service:
-    build: .
-    ports:
-      - 8000:8000
-    depends_on:
-      db:
-        condition: service_completed_successfully
+  # blog-service:
+  #   build: .
+  #   ports:
+  #     - 8000:8000
+  #   depends_on:
+  #     db:
+  #       condition: service_completed_successfully
 # tmpfs: ./sql
