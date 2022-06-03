@@ -4,7 +4,7 @@
  * Created At: Sunday, 2022/05/29 , 00:40:25                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Friday, 2022/06/3 , 12:12:30                                 *
+ * Last Modified: Friday, 2022/06/3 , 12:15:20                                 *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -22,28 +22,37 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type Tag struct{}
+type Article struct{}
 
-func NewTag() Tag {
-	return Tag{}
+func NewArticle() Article {
+	return Article{}
 }
 
-func (t Tag) Get(c *gin.Context) {
+// @Summary get an article with its title or id
+// @Produce json
+// @Param name id int false "tag id"
+// @Param name query string false "tag name" maxlength(100)
+// @Param state query int false "state" Enum(0, 1) default(1)
+// @Success 200 {object} model.Article "succeeded"
+// @Failure 400 {object} errcode.Error "request errors"
+// @Failure 500 {object} errcode.Error "internal errors"
+// @Router       /api/v1/articles/{id} [get]
+func (t Article) Get(c *gin.Context) {
 	app.NewResponse(c).ToErrorResponse(errcode.ServerError)
 }
 
-// @Summary get a list of tags
+// @Summary get a list of articles
 // @Produce json
-// @Param name query string false "tag name" maxlength(100)
+// @Param name query string false "article name" maxlength(100)
 // @Param state query int false "state" Enum(0, 1) default(1)
 // @Param page query int false "page index"
 // @Param page_size query int false "size per page"
-// @Success 200 {object} model.Tag "succeeded"
+// @Success 200 {object} model.Article "succeeded"
 // @Failure 400 {object} errcode.Error "request errors"
 // @Failure 500 {object} errcode.Error "internal errors"
-// @Router       /api/v1/tags [get]
-func (t Tag) List(c *gin.Context) {
-	param := service.TagListRequest{}
+// @Router       /api/v1/articles [get]
+func (t Article) List(c *gin.Context) {
+	param := service.ArticleListRequest{}
 
 	response := app.NewResponse(c)
 	valid, errs := app.BindAndValid(c, &param)
@@ -59,35 +68,38 @@ func (t Tag) List(c *gin.Context) {
 		Page:     app.GetPage(c),
 		PageSize: app.GetPageSize(c),
 	}
-	totalRows, err := svc.CountTag(&service.CountTagRequest{
+	totalRows, err := svc.CountArticle(&service.CountArticleRequest{
 		Name:  param.Name,
 		State: param.State,
 	})
 	if err != nil {
-		response.ToErrorResponse(errcode.ErrorCountTagFail)
+		response.ToErrorResponse(errcode.ErrorCountArticleFail)
 		return
 	}
 
-	tags, err := svc.GetTagList(&param, &pager)
+	articles, err := svc.GetArticleList(&param, &pager)
 	if err != nil {
-		response.ToErrorResponse(errcode.ErrorGetTagListFail)
+		response.ToErrorResponse(errcode.ErrorGetArticleListFail)
 		return
 	}
 
-	response.ToResponseList(tags, totalRows)
+	response.ToResponseList(articles, totalRows)
 }
 
-// @Summary create a new tag
+// @Summary create a new article
 // @Produce json
-// @Param name body string true "tag name" maxlength(100)
+// @Param title body string true "Title name" maxlength(100)
+// @Param desc body string true "Title name" maxlength(100)
+// @Param content body string true "Title name" maxlength(100)
+// @Param cover_image_url body string true "Title name" maxlength(100)
 // @Param state body int false "state" Enum(0, 1) default(1)
-// @Param created_by body  string true "creator" minlength(3) maxlength(100)
+// @Param created_by body string true "creator" minlength(3) maxlength(100)
 // @Success 200 {object} model.Tag "succeeded"
 // @Failure 400 {object} errcode.Error "request errors"
 // @Failure 500 {object} errcode.Error "internal errors"
 // @Router       /api/v1/tags [post]
-func (t Tag) Create(c *gin.Context) {
-	param := service.CreateTagRequest{}
+func (t Article) Create(c *gin.Context) {
+	param := service.CreateArticleRequest{}
 	response := app.NewResponse(c)
 	valid, err1 := app.BindAndValid(c, &param)
 
@@ -97,26 +109,16 @@ func (t Tag) Create(c *gin.Context) {
 	}
 
 	svc := service.New(c.Request.Context())
-	err2 := svc.CreateTag(&param)
+	err2 := svc.CreateArticle(&param)
 	if err2 != nil {
-		response.ToErrorResponse(errcode.ErrorCreateTagFail)
+		response.ToErrorResponse(errcode.ErrorCreateArticleFail)
 	}
 
 	response.ToResponse(gin.H{})
 }
 
-// @Summary update a tag
-// @Produce json
-// @Param id path string true "tag id"
-// @Param name body string false "tag name" minlength(3) maxlength(100)
-// @Param state query int false "state" Enum(0, 1) default(1)
-// @Param modified_by body  string true "modifier" minlength(3) maxlength(100)
-// @Success 200 {object} model.Tag "succeeded"
-// @Failure 400 {object} errcode.Error "request errors"
-// @Failure 500 {object} errcode.Error "internal errors"
-// @Router       /api/v1/tags/{id} [put]
-func (t Tag) Update(c *gin.Context) {
-	param := service.UpdateTagRequest{
+func (t Article) Update(c *gin.Context) {
+	param := service.UpdateArticleRequest{
 		ID: convert.StrTo(c.Param("id")).MustUint32(),
 	}
 	response := app.NewResponse(c)
@@ -128,23 +130,16 @@ func (t Tag) Update(c *gin.Context) {
 	}
 
 	svc := service.New(c.Request.Context())
-	err2 := svc.UpdateTag(&param)
+	err2 := svc.UpdateArticle(&param)
 	if err2 != nil {
-		response.ToErrorResponse(errcode.ErrorUpdateTagFail)
+		response.ToErrorResponse(errcode.ErrorUpdateArticleFail)
 	}
 
 	response.ToResponse(gin.H{})
 }
 
-// @Summary delete a tag
-// @Produce json
-// @Param id path string true "tag id"
-// @Success 200 {object} model.Tag "succeeded"
-// @Failure 400 {object} errcode.Error "request errors"
-// @Failure 500 {object} errcode.Error "internal errors"
-// @Router       /api/v1/tags/{id} [delete]
-func (t Tag) Delete(c *gin.Context) {
-	param := service.DeleteTagRequest{
+func (t Article) Delete(c *gin.Context) {
+	param := service.DeleteArticleRequest{
 		ID: convert.StrTo(c.Param("id")).MustUint32(),
 	}
 	response := app.NewResponse(c)
@@ -156,9 +151,9 @@ func (t Tag) Delete(c *gin.Context) {
 	}
 
 	svc := service.New(c.Request.Context())
-	err2 := svc.DeleteTag(&param)
+	err2 := svc.DeleteArticle(&param)
 	if err2 != nil {
-		response.ToErrorResponse(errcode.ErrorUpdateTagFail)
+		response.ToErrorResponse(errcode.ErrorUpdateArticleFail)
 	}
 
 	response.ToResponse(gin.H{})

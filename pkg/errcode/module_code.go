@@ -4,7 +4,7 @@
  * Created At: Monday, 2022/05/30 , 23:56:41                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Monday, 2022/05/30 , 23:59:59                                *
+ * Last Modified: Friday, 2022/06/3 , 00:03:46                                 *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -19,4 +19,10 @@ var (
 	ErrorUpdateTagFail  = NewError(20010003, "failed updating a tag")
 	ErrorDeleteTagFail  = NewError(20010004, "failed deleting a tag")
 	ErrorCountTagFail   = NewError(20010005, "failed counting tags")
+
+	ErrorGetArticleListFail = NewError(20010006, "failed getting articles list")
+	ErrorCreateArticleFail  = NewError(20010007, "failed creating an article")
+	ErrorUpdateArticleFail  = NewError(20010008, "failed updating an article")
+	ErrorDeleteArticleFail  = NewError(20010009, "failed deleting an article")
+	ErrorCountArticleFail   = NewError(20010010, "failed counting articles")
 )

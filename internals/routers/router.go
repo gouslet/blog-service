@@ -4,7 +4,7 @@
  * Created At: Sunday, 2022/05/29 , 00:36:09                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Monday, 2022/05/30 , 21:35:40                                *
+ * Last Modified: Thursday, 2022/06/2 , 18:49:49                               *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -30,6 +30,7 @@ func NewRouter() *gin.Engine {
 	r.Use(middleware.Translations())
 
 	tag := v1.NewTag()
+	article := v1.NewArticle()
 	apiV1 := r.Group("/api/v1")
 
 	{
@@ -39,6 +40,12 @@ func NewRouter() *gin.Engine {
 		apiV1.PATCH("/tags/:id/state", tag.Update)
 		apiV1.GET("/tags", tag.List)
 
+		apiV1.POST("/articles", article.Create)
+		apiV1.DELETE("/articles/:id", article.Delete)
+		apiV1.PUT("/articles/:id", article.Update)
+		apiV1.PATCH("/articles/:id/state", article.Update)
+		apiV1.GET("/articles/:id", article.Get)
+		apiV1.GET("/articles", article.List)
 	}
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
