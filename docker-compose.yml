@@ -3,7 +3,10 @@ version: '0.0'
 services:
   db:
     image: mariadb
-    restart: on-failure
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
     environment:
       MARIADB_ROOT_PASSWORD: toor
     volumes:
