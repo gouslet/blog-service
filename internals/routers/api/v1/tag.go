@@ -1,10 +1,10 @@
 /*
  * File: \internal\routers\api\v1\tag.go                                       *
- * Project: blog_service                                                       *
+ * Project: blog-service                                                       *
  * Created At: Sunday, 2022/05/29 , 00:40:25                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Friday, 2022/06/3 , 12:12:30                                 *
+ * Last Modified: Friday, 2022/06/3 , 15:32:20                                 *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -81,7 +81,7 @@ func (t Tag) List(c *gin.Context) {
 // @Produce json
 // @Param name body string true "tag name" maxlength(100)
 // @Param state body int false "state" Enum(0, 1) default(1)
-// @Param created_by body  string true "creator" minlength(3) maxlength(100)
+// @Param created_by body string true "creator" minlength(3) maxlength(100)
 // @Success 200 {object} model.Tag "succeeded"
 // @Failure 400 {object} errcode.Error "request errors"
 // @Failure 500 {object} errcode.Error "internal errors"
@@ -109,8 +109,8 @@ func (t Tag) Create(c *gin.Context) {
 // @Produce json
 // @Param id path string true "tag id"
 // @Param name body string false "tag name" minlength(3) maxlength(100)
-// @Param state query int false "state" Enum(0, 1) default(1)
-// @Param modified_by body  string true "modifier" minlength(3) maxlength(100)
+// @Param state body int false "state" Enum(0, 1) default(1)
+// @Param modified_by body string true "modifier" minlength(3) maxlength(100)
 // @Success 200 {object} model.Tag "succeeded"
 // @Failure 400 {object} errcode.Error "request errors"
 // @Failure 500 {object} errcode.Error "internal errors"

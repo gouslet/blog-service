@@ -485,11 +485,13 @@ const docTemplate = `{
                         }
                     },
                     {
-                        "type": "integer",
                         "default": 1,
                         "description": "state",
                         "name": "state",
-                        "in": "query"
+                        "in": "body",
+                        "schema": {
+                            "type": "integer"
+                        }
                     },
                     {
                         "maxLength": 100,

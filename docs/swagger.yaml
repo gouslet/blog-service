@@ -394,9 +394,10 @@ paths:
           type: string
       - default: 1
         description: state
-        in: query
+        in: body
         name: state
-        type: integer
+        schema:
+          type: integer
       - description: modifier
         in: body
         maxLength: 100

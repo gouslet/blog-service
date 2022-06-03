@@ -1,10 +1,10 @@
 /*
  * File: \internal\model\model.go                                              *
- * Project: blog_service                                                       *
+ * Project: blog-service                                                       *
  * Created At: Sunday, 2022/05/29 , 00:25:51                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Thursday, 2022/06/2 , 01:36:26                               *
+ * Last Modified: Friday, 2022/06/3 , 15:15:46                                 *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -65,7 +65,7 @@ func NewDBEngine(databaseSetting *setting.DatabaseSettings) (*gorm.DB, error) {
 	}
 
 	db.Callback().Create().Replace("gorm:update_time_stamp", updateTimeStampForCreateCallback)
-	db.Callback().Create().Replace("gorm:update_time_stamp", updateTimeStampForUpdateCallback)
+	// db.Callback().Create().Replace("gorm:update_time_stamp", updateTimeStampForUpdateCallback)
 
 	return db, nil
 }
@@ -73,8 +73,7 @@ func NewDBEngine(databaseSetting *setting.DatabaseSettings) (*gorm.DB, error) {
 func updateTimeStampForCreateCallback(db *gorm.DB) {
 	statement := db.Statement
 	context := statement.Context
-	for _, filed := range []string{"Modified", "CreatedOn"} {
-
+	for _, filed := range []string{"ModifiedAt", "CreatedAt"} {
 		timeField := statement.Schema.LookUpField(filed)
 		if !timeField.NotNull {
 			reflectValue := statement.ReflectValue

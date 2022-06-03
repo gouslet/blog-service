@@ -14,7 +14,7 @@ USE `blog`;
 
 DROP TABLE IF EXISTS `blog_tag`;
 CREATE TABLE `blog_tag` (
-  `id` int(10) NOT NULL,
+  `id` int(10) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL DEFAULT '' COMMENT '标签名称',
   `created_at` int(10) unsigned NOT NULL DEFAULT 0 COMMENT '创建时间',
   `created_by` varchar(100) NOT NULL DEFAULT '' COMMENT '创建人',
