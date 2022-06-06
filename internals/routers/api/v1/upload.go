@@ -1,22 +1,25 @@
 /*
- * File: \pkg\errcode.go                                                       *
+ * File: /internals/routers/upload.go                                          *
  * Project: blog-service                                                       *
- * Created At: Sunday, 2022/05/29 , 16:16:21                                   *
+ * Created At: Monday, 2022/06/6 , 15:28:44                                    *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Monday, 2022/06/6 , 15:35:07                                 *
+ * Last Modified: Monday, 2022/06/6 , 15:37:16                                 *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
  * Date      	By	Comments                                                   *
  * ----------	---	---------------------------------------------------------  *
  */
-package errcode
+package api
 
-var (
-	Success         = NewError(0, "Succeeded")
-	ServerError     = NewError(10000000, "Internal error")
-	InvalidParams   = NewError(10000001, "Parameters error")
-	NotFound        = NewError(10000002, "Not found")
-	TooManyRequests = NewError(10000003, "Too many requests")
-)
+import "github.com/gin-gonic/gin"
+
+type Upload struct {
+}
+
+func NewUpload() Upload {
+	return Upload{}
+}
+
+func (u Upload) UploadFile(c *gin.Context)

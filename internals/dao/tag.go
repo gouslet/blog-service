@@ -1,10 +1,10 @@
 /*
  * File: \internals\dao\tag.go                                                 *
- * Project: blog_service                                                       *
+ * Project: blog-service                                                       *
  * Created At: Monday, 2022/05/30 , 21:59:15                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Wednesday, 2022/06/1 , 20:12:42                              *
+ * Last Modified: Sunday, 2022/06/5 , 11:16:32                                 *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -43,15 +43,22 @@ func (d *Dao) CreateTag(name string, state uint8, createdBy string) error {
 
 func (d *Dao) UpdateTag(id uint32, name string, state uint8, modifiedBy string) error {
 	tags := model.Tag{
-		Name:  name,
-		State: state,
+
 		Model: &model.Model{
 			ID:         id,
 			ModifiedBy: modifiedBy,
 		},
 	}
+	values := map[string]any{
+		"state":       state,
+		"modified_by": modifiedBy,
+	}
 
-	return tags.Update(d.engine)
+	if name != "" {
+		values["name"] = name
+	}
+
+	return tags.Update(d.engine, values)
 }
 
 func (d *Dao) DeleteTag(id uint32) error {

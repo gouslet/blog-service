@@ -4,7 +4,7 @@
  * Created At: Sunday, 2022/05/29 , 00:40:25                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Friday, 2022/06/3 , 15:32:20                                 *
+ * Last Modified: Saturday, 2022/06/4 , 07:29:14                               *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -34,7 +34,7 @@ func (t Tag) Get(c *gin.Context) {
 
 // @Summary get a list of tags
 // @Produce json
-// @Param name query string false "tag name" maxlength(100)
+// @Param name query string false "tag name" minlength(3) maxlength(100)
 // @Param state query int false "state" Enum(0, 1) default(1)
 // @Param page query int false "page index"
 // @Param page_size query int false "size per page"
@@ -79,7 +79,7 @@ func (t Tag) List(c *gin.Context) {
 
 // @Summary create a new tag
 // @Produce json
-// @Param name body string true "tag name" maxlength(100)
+// @Param name body string true "tag name" minlength(3) maxlength(100)
 // @Param state body int false "state" Enum(0, 1) default(1)
 // @Param created_by body string true "creator" minlength(3) maxlength(100)
 // @Success 200 {object} model.Tag "succeeded"
@@ -130,7 +130,7 @@ func (t Tag) Update(c *gin.Context) {
 	svc := service.New(c.Request.Context())
 	err2 := svc.UpdateTag(&param)
 	if err2 != nil {
-		response.ToErrorResponse(errcode.ErrorUpdateTagFail)
+		response.ToErrorResponse(errcode.ErrorUpdateTagFail.WithDetails(err2.Error()))
 	}
 
 	response.ToResponse(gin.H{})

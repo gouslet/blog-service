@@ -1,10 +1,10 @@
 /*
  * File: \internal\model\model.go                                              *
- * Project: blog_service                                                       *
+ * Project: blog-service                                                       *
  * Created At: Sunday, 2022/05/29 , 00:25:51                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Wednesday, 2022/06/1 , 10:40:52                              *
+ * Last Modified: Sunday, 2022/06/5 , 11:16:37                                 *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -13,7 +13,11 @@
  */
 package model
 
-import "gorm.io/gorm"
+import (
+	"errors"
+
+	"gorm.io/gorm"
+)
 
 // Tag Model
 type Tag struct {
@@ -65,9 +69,16 @@ func (t Tag) Create(db *gorm.DB) error {
 	return db.Create(&t).Error
 }
 
-func (t Tag) Update(db *gorm.DB) error {
-	db = db.Model(&Tag{}).Where("id = ? AND  is_del = ?", t.ID, 0)
-	return db.Save(&t).Error
+func (t Tag) Update(db *gorm.DB, values any) error {
+	db = db.Model(t).Where("id = ? AND  is_del = ?", t.ID, 0)
+	if err := db.First(&t).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return errors.New("invalid tag_id,not existed")
+		}
+		return err
+	}
+
+	return db.Select("*").Updates(values).Error
 }
 
 func (t Tag) Delete(db *gorm.DB) error {

@@ -1,10 +1,10 @@
 /*
  * File: \pkg\errcode\module_code.go                                           *
- * Project: blog_service                                                       *
+ * Project: blog-service                                                       *
  * Created At: Monday, 2022/05/30 , 23:56:41                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Friday, 2022/06/3 , 00:03:46                                 *
+ * Last Modified: Monday, 2022/06/6 , 15:28:11                                 *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -25,4 +25,6 @@ var (
 	ErrorUpdateArticleFail  = NewError(20010008, "failed updating an article")
 	ErrorDeleteArticleFail  = NewError(20010009, "failed deleting an article")
 	ErrorCountArticleFail   = NewError(20010010, "failed counting articles")
+
+	ErrorUploadFileFailed = NewError(2003001,"failed uploading a file")
 )

@@ -10,13 +10,20 @@ App:
   LogFileExt: .log
   DefaultPageSize: 10
   MaxPageSize: 100
+  UploadSavePath: storage/uploads # 上传文件的保存位置
+  UploadServerUrl: http://127.0.0.1:8000/static # 上传文件后用于展示的文件服务地址
+  UploadImageMaxSize: 5 # 上传文件所允许的最大空间大小，单位：MB
+  UploadImageAllowExts: # 上传文件所允许的文件后缀
+    - .jpg
+    - .jpeg
+    - .png
 
 Database:
   DBType: mariadb
   Username: root
   Password: toor
   # Host: db:3306
-  Host: 127.0.0.1:49159
+  Host: 127.0.0.1:49154
   DBName: blog
   TablePrefix: blog_
   Charset: utf8

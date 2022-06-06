@@ -1,10 +1,10 @@
 /*
  * File: \internals\service\tag.go                                             *
- * Project: blog_service                                                       *
+ * Project: blog-service                                                       *
  * Created At: Monday, 2022/05/30 , 20:44:06                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Wednesday, 2022/06/1 , 20:15:27                              *
+ * Last Modified: Saturday, 2022/06/4 , 08:06:03                               *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -30,15 +30,15 @@ type TagListRequest struct {
 
 type CreateTagRequest struct {
 	Name      string `form:"name" binding:"max=100"`
-	CreatedBy string `form"created_by" binding"required,min=3,max=100"`
+	CreatedBy string `json:"created_by" binding:"required,min=3,max=100"`
 	State     uint8  `form:"state,default=1" binding:"oneof=0 1"`
 }
 
 type UpdateTagRequest struct {
 	ID         uint32 `form:"id" binding:"required,gte=1"`
-	Name       string `form:"name" binding:"min=3,max=100"`
+	Name       string `json:"name" binding:"min=3,max=100"`
 	State      uint8  `form:"state,default=1" binding:"oneof=0 1"`
-	ModifiedBy string `form"modified_by" binding"required,min=3,max=100"`
+	ModifiedBy string `json:"modified_by" binding:"required,min=3,max=100"`
 }
 
 type DeleteTagRequest struct {

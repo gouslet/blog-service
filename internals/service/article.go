@@ -1,18 +1,16 @@
 /*
  * File: \internals\service\article.go                                         *
- * Project: blog_service                                                       *
+ * Project: blog-service                                                       *
  * Created At: Thursday, 2022/06/2 , 23:45:37                                  *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Thursday, 2022/06/2 , 23:46:14                               *
+ * Last Modified: Friday, 2022/06/3 , 17:11:20                                 *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
  * Date      	By	Comments                                                   *
  * ----------	---	---------------------------------------------------------  *
  */
-
-
 
 package service
 
@@ -33,7 +31,7 @@ type ArticleListRequest struct {
 
 type CreateArticleRequest struct {
 	Name      string `form:"name" binding:"max=100"`
-	CreatedBy string `form"created_by" binding"required,min=3,max=100"`
+	CreatedBy string `json:"created_by" binding:"required,min=3,max=100"`
 	State     uint8  `form:"state,default=1" binding:"oneof=0 1"`
 }
 
@@ -41,7 +39,7 @@ type UpdateArticleRequest struct {
 	ID         uint32 `form:"id" binding:"required,gte=1"`
 	Name       string `form:"name" binding:"min=3,max=100"`
 	State      uint8  `form:"state,default=1" binding:"oneof=0 1"`
-	ModifiedBy string `form"modified_by" binding"required,min=3,max=100"`
+	ModifiedBy string `form:"modified_by" binding:"required,min=3,max=100"`
 }
 
 type DeleteArticleRequest struct {

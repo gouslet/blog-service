@@ -1,10 +1,10 @@
 /*
  * File: \internal\routers\routers.go                                          *
- * Project: blog_service                                                       *
+ * Project: blog-service                                                       *
  * Created At: Sunday, 2022/05/29 , 00:36:09                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Thursday, 2022/06/2 , 18:49:49                               *
+ * Last Modified: Monday, 2022/06/6 , 15:41:12                                 *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -16,11 +16,11 @@ package routers
 import (
 	_ "go_start/blog_service/docs"
 	"go_start/blog_service/internals/middleware"
-	v1 "go_start/blog_service/internals/routers/api/v1"
+	api "go_start/blog_service/internals/routers/api/v1"
 
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
-	"github.com/swaggo/gin-swagger"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func NewRouter() *gin.Engine {
@@ -29,9 +29,9 @@ func NewRouter() *gin.Engine {
 	r.Use(gin.Recovery())
 	r.Use(middleware.Translations())
 
-	tag := v1.NewTag()
-	article := v1.NewArticle()
-	apiV1 := r.Group("/api/v1")
+	tag := api.NewTag()
+	article := api.NewArticle()
+	apiV1 := r.Group("/api/api")
 
 	{
 		apiV1.POST("/tags", tag.Create)
@@ -47,6 +47,10 @@ func NewRouter() *gin.Engine {
 		apiV1.GET("/articles/:id", article.Get)
 		apiV1.GET("/articles", article.List)
 	}
+
+	upload := api.NewUpload()
+
+	r.POST("/upload/file", upload.UploadFile)
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
