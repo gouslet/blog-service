@@ -4,7 +4,7 @@
  * Created At: Monday, 2022/06/6 , 14:41:29                                    *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Monday, 2022/06/6 , 15:22:50                                 *
+ * Last Modified: Monday, 2022/06/6 , 16:28:50                                 *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -53,12 +53,12 @@ func CheckSavePath(dst string) bool {
 // CheckPermission the permission of the dst path
 func CheckPermission(dst string) bool {
 	_, err := os.Stat(dst)
-	return os.IsNotExist(err)
+	return os.IsPermission(err)
 }
 
 // CheckContainExt check if the extension of the file is permitted
 func CheckContainExt(t FileType, name string) bool {
-	ext := GetFileName(name)
+	ext := GetFileExt(name)
 	ext = strings.ToUpper(ext)
 
 	switch t {

@@ -4,7 +4,7 @@
  * Created At: Sunday, 2022/05/29 , 00:36:09                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Monday, 2022/06/6 , 15:41:12                                 *
+ * Last Modified: Monday, 2022/06/6 , 15:58:25                                 *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -15,8 +15,10 @@ package routers
 
 import (
 	_ "go_start/blog_service/docs"
+	"go_start/blog_service/global"
 	"go_start/blog_service/internals/middleware"
 	api "go_start/blog_service/internals/routers/api/v1"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -53,6 +55,6 @@ func NewRouter() *gin.Engine {
 	r.POST("/upload/file", upload.UploadFile)
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-
+	r.StaticFS("/static",http.Dir(global.AppSetting.UploadSavePath))
 	return r
 }

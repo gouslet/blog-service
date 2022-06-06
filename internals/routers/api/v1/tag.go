@@ -4,14 +4,14 @@
  * Created At: Sunday, 2022/05/29 , 00:40:25                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Saturday, 2022/06/4 , 07:29:14                               *
+ * Last Modified: Monday, 2022/06/6 , 15:55:43                                 *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
  * Date      	By	Comments                                                   *
  * ----------	---	---------------------------------------------------------  *
  */
-package v1
+package api
 
 import (
 	"go_start/blog_service/internals/service"

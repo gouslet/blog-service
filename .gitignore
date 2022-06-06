@@ -15,5 +15,5 @@
 # vendor/
 
 .vscode/
-
+storage/
 oryxBuildBinary
