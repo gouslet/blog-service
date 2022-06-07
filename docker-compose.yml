@@ -21,7 +21,9 @@ services:
     restart: on-failure
     ports:
       - 10000:8080
-  
+    depends_on:
+      - db 
+
   # blog-service:
   #   build: .
   #   ports:
