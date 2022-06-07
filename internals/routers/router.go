@@ -4,7 +4,7 @@
  * Created At: Sunday, 2022/05/29 , 00:36:09                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Monday, 2022/06/6 , 15:58:25                                 *
+ * Last Modified: Tuesday, 2022/06/7 , 14:36:35                                *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -27,13 +27,20 @@ import (
 
 func NewRouter() *gin.Engine {
 	r := gin.New()
-	r.Use(gin.Logger())
-	r.Use(gin.Recovery())
+	if global.ServerSetting.RunMode == "debug" {
+		r.Use(gin.Logger())
+		r.Use(gin.Recovery())
+	} else {
+		r.Use(middleware.AccessLog())
+		r.Use(middleware.Recovery())
+	}
+
 	r.Use(middleware.Translations())
 
 	tag := api.NewTag()
 	article := api.NewArticle()
-	apiV1 := r.Group("/api/api")
+	apiV1 := r.Group("/api/v1")
+	apiV1.Use(middleware.JWT())
 
 	{
 		apiV1.POST("/tags", tag.Create)
@@ -48,6 +55,7 @@ func NewRouter() *gin.Engine {
 		apiV1.PATCH("/articles/:id/state", article.Update)
 		apiV1.GET("/articles/:id", article.Get)
 		apiV1.GET("/articles", article.List)
+
 	}
 
 	upload := api.NewUpload()
@@ -55,6 +63,8 @@ func NewRouter() *gin.Engine {
 	r.POST("/upload/file", upload.UploadFile)
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	r.StaticFS("/static",http.Dir(global.AppSetting.UploadSavePath))
+	r.StaticFS("/static", http.Dir(global.AppSetting.UploadSavePath))
+
+	r.GET("/auth", api.GetAuth)
 	return r
 }

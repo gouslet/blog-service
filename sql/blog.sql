@@ -72,3 +72,6 @@ CREATE TABLE `blog_tag` (
   `is_del` tinyint(3) unsigned NOT NULL DEFAULT 0 COMMENT '是否已删除 0 为未删除、1 为已删除',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='标签管理';
+
+INSERT INTO `blog_auth` (`id`, `app_key`, `app_secret`, `created_at`, `created_by`, `modified_at`, `modified_by`, `deleted_at`, `is_del`) VALUES
+(1,	'eddycjy',	'go-blog-service',	0,	'eddycjy',	0,	'',	0,	0);

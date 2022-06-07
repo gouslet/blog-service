@@ -1,27 +1,26 @@
 /*
- * File: \global\setting.go                                                    *
+ * File: /internals/dao/jwt.go                                                 *
  * Project: blog-service                                                       *
- * Created At: Sunday, 2022/05/29 , 17:26:02                                   *
+ * Created At: Tuesday, 2022/06/7 , 10:15:07                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Tuesday, 2022/06/7 , 14:25:07                                *
+ * Last Modified: Tuesday, 2022/06/7 , 10:16:46                                *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
  * Date      	By	Comments                                                   *
  * ----------	---	---------------------------------------------------------  *
  */
-package global
+package dao
 
-import (
-	"go_start/blog_service/pkg/logger"
-	"go_start/blog_service/pkg/setting"
-)
+import "go_start/blog_service/internals/model"
 
-var (
-	ServerSetting   *setting.ServerSettings
-	AppSetting      *setting.AppSettings
-	DatabaseSetting *setting.DatabaseSettings
-	JWTSetting      *setting.JWTSettings
-	Logger          *logger.Logger
-)
+func (d *Dao)GetAuth(appKey,appSecret string)(model.Auth,error) {
+	auth := model.Auth{
+		AppKey: appKey,
+		AppSecret: appSecret,
+	}
+
+	return auth.Get(d.engine)
+}
+

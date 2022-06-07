@@ -23,10 +23,15 @@ Database:
   Username: root
   Password: toor
   # Host: db:3306
-  Host: 127.0.0.1:49153
+  Host: 127.0.0.1:49169
   DBName: blog
   TablePrefix: blog_
   Charset: utf8
   ParseTime: True
   MaxIdleConns: 10
   MaxIdOpenConns: 30
+
+JWT:
+  Secret: eddycjy
+  Issuer: blog-service
+  Expire: 7200
