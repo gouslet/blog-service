@@ -4,7 +4,7 @@
  * Created At: Sunday, 2022/05/29 , 00:36:09                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Tuesday, 2022/06/7 , 14:36:35                                *
+ * Last Modified: Wednesday, 2022/06/8 , 07:03:26                              *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -36,6 +36,7 @@ func NewRouter() *gin.Engine {
 	}
 
 	r.Use(middleware.Translations())
+	r.Use(middleware.Tracing())
 
 	tag := api.NewTag()
 	article := api.NewArticle()

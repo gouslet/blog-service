@@ -4,7 +4,7 @@
  * Created At: Friday, 2022/05/27 , 20:47:27                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Tuesday, 2022/06/7 , 14:31:45                                *
+ * Last Modified: Wednesday, 2022/06/8 , 07:01:10                              *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -19,6 +19,7 @@ import (
 	"go_start/blog_service/internals/routers"
 	"go_start/blog_service/pkg/logger"
 	"go_start/blog_service/pkg/setting"
+	"go_start/blog_service/pkg/tracer"
 	"log"
 	"net/http"
 	"time"
@@ -41,6 +42,11 @@ func init() {
 	err = setupDBEngine()
 	if err != nil {
 		log.Fatalf("init.setupDBEngine err: %v", err)
+	}
+
+	err = setupTracer()
+	if err != nil {
+		log.Fatalf("init.setupTracer err: %v", err)
 	}
 }
 
@@ -122,6 +128,19 @@ func setupLogger() error {
 		"",
 		log.LstdFlags,
 	).WithCaller(2)
+
+	return nil
+}
+
+func setupTracer() error {
+	jaegerTracer, _, err := tracer.NewJaegerTracer(
+		"blog-service",
+		"127.0.0.1:6831",
+	)
+	if err != nil {
+		return err
+	}
+	global.Tracer = jaegerTracer
 
 	return nil
 }

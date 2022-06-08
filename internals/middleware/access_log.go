@@ -4,7 +4,7 @@
  * Created At: Tuesday, 2022/06/7 , 12:33:33                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Tuesday, 2022/06/7 , 14:34:41                                *
+ * Last Modified: Wednesday, 2022/06/8 , 07:27:09                              *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -28,7 +28,13 @@ type AccessLogWriter struct {
 	body *bytes.Buffer
 }
 
-func (w AccessLogWriter) Write(p []byte) (int, error)
+func (w AccessLogWriter) Write(p []byte) (int, error) {
+	if n, err := w.body.Write(p); err != nil {
+		return n, err
+	}
+
+	return w.ResponseWriter.Write(p)
+}
 
 func AccessLog() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
