@@ -4,7 +4,7 @@
  * Created At: Wednesday, 2022/06/8 , 07:01:41                                 *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Wednesday, 2022/06/8 , 07:26:01                              *
+ * Last Modified: Wednesday, 2022/06/8 , 07:45:53                              *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -21,6 +21,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/opentracing/opentracing-go"
 	"github.com/opentracing/opentracing-go/ext"
+	"github.com/uber/jaeger-client-go"
 )
 
 func Tracing() func(c *gin.Context) {
@@ -50,6 +51,18 @@ func Tracing() func(c *gin.Context) {
 		}
 
 		defer span.Finish()
+
+		var traceID, spanID string
+		var spanContext = span.Context()
+
+		switch jaegerContext:= spanContext.(type) {
+		case jaeger.SpanContext:
+			traceID = jaegerContext.TraceID().String()
+			spanID = jaegerContext.SpanID().String()
+		}
+
+		c.Set("X-Trace-ID", traceID)
+		c.Set("X-Span-ID", spanID)
 		c.Request = c.Request.WithContext(newCtx)
 		c.Next()
 	}

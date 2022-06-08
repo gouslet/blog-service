@@ -4,7 +4,7 @@
  * Created At: Friday, 2022/05/27 , 20:47:27                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Wednesday, 2022/06/8 , 07:01:10                              *
+ * Last Modified: Wednesday, 2022/06/8 , 08:49:33                              *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -14,6 +14,7 @@
 package main
 
 import (
+	"context"
 	"go_start/blog_service/global"
 	"go_start/blog_service/internals/model"
 	"go_start/blog_service/internals/routers"
@@ -22,6 +23,9 @@ import (
 	"go_start/blog_service/pkg/tracer"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -69,7 +73,29 @@ func main() {
 		WriteTimeout:   global.ServerSetting.WriteTimeout,
 		MaxHeaderBytes: 1 << 20,
 	}
-	s.ListenAndServe()
+
+	go func() {
+		err := s.ListenAndServe()
+
+		if err != nil && err != http.ErrServerClosed {
+			log.Fatalf("s.ListenAndServe err: %v",err)
+		}
+	}()
+
+	quit := make(chan os.Signal,1)
+	signal.Notify(quit,syscall.SIGINT,syscall.SIGTERM)
+	<-quit // waiting for interrupt signals
+	log.Println("Shuting down server...")
+
+	ctx,cancel := context.WithTimeout(context.Background(),5*time.Second)
+
+	defer cancel()
+
+	if err := s.Shutdown(ctx);err != nil {
+		log.Fatal("Server forced to shutdown: ",err)
+	}
+
+	log.Println("Server exiting")
 }
 
 func setupSetting() error {

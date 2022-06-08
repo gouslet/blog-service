@@ -4,7 +4,7 @@
  * Created At: Tuesday, 2022/06/7 , 12:44:01                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Tuesday, 2022/06/7 , 14:24:27                                *
+ * Last Modified: Wednesday, 2022/06/8 , 08:05:10                              *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -21,6 +21,8 @@ import (
 	"log"
 	"runtime"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 type Level int8
@@ -60,6 +62,7 @@ type Logger struct {
 	ctx       context.Context
 	fields    Fields
 	callers   []string
+	level     Level
 }
 
 func NewLogger(w io.Writer, prefix string, flag int) *Logger {
@@ -69,10 +72,6 @@ func NewLogger(w io.Writer, prefix string, flag int) *Logger {
 func (l *Logger) clone() *Logger {
 	nl := *l
 	return &nl
-}
-
-func (l *Logger) WithLevel(level Level, v ...any) {
-	l.Output(level, fmt.Sprint(v...))
 }
 
 func (l *Logger) WithFields(f Fields) *Logger {
@@ -85,6 +84,12 @@ func (l *Logger) WithFields(f Fields) *Logger {
 		ll.fields[k] = v
 	}
 
+	return ll
+}
+
+func (l *Logger) WithLevel(level Level) *Logger {
+	ll := l.clone()
+	ll.level = level
 	return ll
 }
 
@@ -126,6 +131,19 @@ func (l *Logger) WithCallerFrames() *Logger {
 	return ll
 }
 
+func (l *Logger) WithTrace() *Logger {
+	ginCtx, ok := l.ctx.(*gin.Context)
+
+	if ok {
+		return l.WithFields(Fields{
+			"trace_id": ginCtx.MustGet("X-Trace-ID"),
+			"span_id":  ginCtx.MustGet("X-Span-ID"),
+		})
+	}
+
+	return l
+}
+
 func (l *Logger) JSONFormat(level Level, message string) map[string]any {
 	data := make(Fields, len(l.fields)+4)
 	data["level"] = level.String()
@@ -144,11 +162,11 @@ func (l *Logger) JSONFormat(level Level, message string) map[string]any {
 	return data
 }
 
-func (l *Logger) Output(level Level, message string) {
-	body, _ := json.Marshal(l.JSONFormat(level, message))
+func (l *Logger) Output(message string) {
+	body, _ := json.Marshal(l.JSONFormat(l.level, message))
 	content := string(body)
 
-	switch level {
+	switch l.level {
 	case INFO, DEBUG, WARN, ERROR:
 		l.newLogger.Print(content)
 	case FATAL:
@@ -158,49 +176,61 @@ func (l *Logger) Output(level Level, message string) {
 	}
 }
 
-func (l *Logger) Info(v ...any) {
-	l.Output(INFO, fmt.Sprint(v...))
+func (l *Logger) Info(ctx context.Context, v ...any) {
+	l.WithLevel(INFO).WithContext(ctx).WithTrace()
+	l.Output(fmt.Sprint(v...))
 }
 
-func (l *Logger) Infof(format string, v ...any) {
-	l.Output(INFO, fmt.Sprintf(format, v...))
+func (l *Logger) Infof(ctx context.Context, format string, v ...any) {
+	l.WithLevel(INFO).WithContext(ctx).WithTrace()
+	l.Output(fmt.Sprintf(format, v...))
 }
 
-func (l *Logger) Debug(v ...any) {
-	l.Output(DEBUG, fmt.Sprint(v...))
+func (l *Logger) Debug(ctx context.Context, v ...any) {
+	l.WithLevel(DEBUG).WithContext(ctx).WithTrace()
+	l.Output(fmt.Sprint(v...))
 }
 
-func (l *Logger) Debugf(format string, v ...any) {
-	l.Output(DEBUG, fmt.Sprintf(format, v...))
+func (l *Logger) Debugf(ctx context.Context, format string, v ...any) {
+	l.WithLevel(DEBUG).WithContext(ctx).WithTrace()
+	l.Output(fmt.Sprintf(format, v...))
 }
 
-func (l *Logger) Warn(v ...any) {
-	l.Output(WARN, fmt.Sprint(v...))
+func (l *Logger) Warn(ctx context.Context, v ...any) {
+	l.WithLevel(WARN).WithContext(ctx).WithTrace()
+	l.Output(fmt.Sprint(v...))
 }
 
-func (l *Logger) Warnf(format string, v ...any) {
-	l.Output(WARN, fmt.Sprintf(format, v...))
+func (l *Logger) Warnf(ctx context.Context, format string, v ...any) {
+	l.WithLevel(WARN).WithContext(ctx).WithTrace()
+	l.Output(fmt.Sprintf(format, v...))
 }
 
-func (l *Logger) Error(v ...any) {
-	l.Output(ERROR, fmt.Sprint(v...))
+func (l *Logger) Error(ctx context.Context, v ...any) {
+	l.WithLevel(ERROR).WithContext(ctx).WithTrace()
+	l.Output(fmt.Sprint(v...))
 }
 
-func (l *Logger) Errorf(format string, v ...any) {
-	l.Output(ERROR, fmt.Sprintf(format, v...))
+func (l *Logger) Errorf(ctx context.Context, format string, v ...any) {
+	l.WithLevel(ERROR).WithContext(ctx).WithTrace()
+	l.Output(fmt.Sprintf(format, v...))
 }
 
-func (l *Logger) Fatal(v ...any) {
-	l.Output(FATAL, fmt.Sprint(v...))
+func (l *Logger) Fatal(ctx context.Context, v ...any) {
+	l.WithLevel(FATAL).WithContext(ctx).WithTrace()
+	l.Output(fmt.Sprint(v...))
 }
-func (l *Logger) Fatalf(format string, v ...any) {
-	l.Output(FATAL, fmt.Sprintf(format, v...))
-}
-
-func (l *Logger) Panic(v ...any) {
-	l.Output(PANIC, fmt.Sprint(v...))
+func (l *Logger) Fatalf(ctx context.Context, format string, v ...any) {
+	l.WithLevel(FATAL).WithContext(ctx).WithTrace()
+	l.Output(fmt.Sprintf(format, v...))
 }
 
-func (l *Logger) Panicf(format string, v ...any) {
-	l.Output(PANIC, fmt.Sprintf(format, v...))
+func (l *Logger) Panic(ctx context.Context, v ...any) {
+	l.WithLevel(PANIC).WithContext(ctx).WithTrace()
+	l.Output(fmt.Sprint(v...))
+}
+
+func (l *Logger) Panicf(ctx context.Context, format string, v ...any) {
+	l.WithLevel(PANIC).WithContext(ctx).WithTrace()
+	l.Output(fmt.Sprintf(format, v...))
 }

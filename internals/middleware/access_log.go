@@ -4,7 +4,7 @@
  * Created At: Tuesday, 2022/06/7 , 12:33:33                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Wednesday, 2022/06/8 , 07:27:09                              *
+ * Last Modified: Wednesday, 2022/06/8 , 08:06:39                              *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -55,6 +55,7 @@ func AccessLog() gin.HandlerFunc {
 		}
 		format := "access log: method: %s, status code: %d, begin time: %d, end time %d"
 		global.Logger.WithFields(fields).Infof(
+			ctx,
 			format,
 			ctx.Request.Method,
 			bodyWriter.Status(),

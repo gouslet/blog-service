@@ -4,7 +4,7 @@
  * Created At: Tuesday, 2022/06/7 , 14:37:11                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Tuesday, 2022/06/7 , 14:40:07                                *
+ * Last Modified: Wednesday, 2022/06/8 , 08:07:18                              *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -24,9 +24,9 @@ import (
 func Recovery() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		defer func() {
-			if err := recover();err != nil {
+			if err := recover(); err != nil {
 				s := "panic recover err: %v"
-				global.Logger.WithCallerFrames().Errorf(s,err)
+				global.Logger.WithCallerFrames().Errorf(ctx, s, err)
 				app.NewResponse(ctx).ToErrorResponse(errcode.ServerError)
 				ctx.Abort()
 			}
@@ -35,4 +35,3 @@ func Recovery() gin.HandlerFunc {
 		ctx.Next()
 	}
 }
-
