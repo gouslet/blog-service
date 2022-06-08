@@ -4,7 +4,7 @@
  * Created At: Sunday, 2022/05/29 , 17:19:20                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Tuesday, 2022/06/7 , 09:52:11                                *
+ * Last Modified: Wednesday, 2022/06/8 , 09:11:54                              *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -14,6 +14,8 @@
 package setting
 
 import "time"
+
+var sections = make(map[string]any)
 
 type ServerSettings struct {
 	RunMode      string
@@ -59,6 +61,21 @@ func (s *Setting) ReadSection(k string, v any) error {
 
 	if err != nil {
 		return err
+	}
+
+	if _, ok := sections[k]; !ok {
+		sections[k] = v
+	}
+
+	return nil
+}
+
+func (s *Setting) ReloadAllSection() error {
+	for k, v := range sections {
+		err := s.ReadSection(k, v)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

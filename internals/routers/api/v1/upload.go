@@ -4,7 +4,7 @@
  * Created At: Monday, 2022/06/6 , 15:28:44                                    *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Monday, 2022/06/6 , 16:05:32                                 *
+ * Last Modified: Wednesday, 2022/06/8 , 09:27:53                              *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -43,6 +43,7 @@ func (u Upload) UploadFile(c *gin.Context) {
 
 	if fileHeader == nil || fileType <= 0 {
 		response.ToErrorResponse(errcode.InvalidParams)
+		return
 	}
 
 	svc := service.New(c.Request.Context())
@@ -51,10 +52,11 @@ func (u Upload) UploadFile(c *gin.Context) {
 	if err != nil {
 		errRsp := errcode.ErrorUploadFileFailed.WithDetails(err.Error())
 		response.ToErrorResponse(errRsp)
+		return
 	}
 
 	response.ToResponse(gin.H{
-		"file_access_url":fileInfo.AccessUrl,
+		"file_access_url": fileInfo.AccessUrl,
 	})
 
 }
