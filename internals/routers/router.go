@@ -4,7 +4,7 @@
  * Created At: Sunday, 2022/05/29 , 00:36:09                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Wednesday, 2022/06/8 , 07:03:26                              *
+ * Last Modified: Wednesday, 2022/06/8 , 10:04:23                              *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -18,11 +18,22 @@ import (
 	"go_start/blog_service/global"
 	"go_start/blog_service/internals/middleware"
 	api "go_start/blog_service/internals/routers/api/v1"
+	"go_start/blog_service/pkg/limiter"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+)
+
+var methodLimiters = limiter.NewMethodLimiter().AddBuckets(
+	limiter.LimiterBucketRule{
+		Key:          "/auth",
+		FillInterval: time.Second,
+		Capacity:     10,
+		Quantum:      10,
+	},
 )
 
 func NewRouter() *gin.Engine {
@@ -35,6 +46,7 @@ func NewRouter() *gin.Engine {
 		r.Use(middleware.Recovery())
 	}
 
+	r.Use(middleware.RateLimiter(methodLimiters))
 	r.Use(middleware.Translations())
 	r.Use(middleware.Tracing())
 
