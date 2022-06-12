@@ -4,7 +4,7 @@
  * Created At: Sunday, 2022/05/29 , 00:25:51                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Sunday, 2022/06/5 , 11:16:37                                 *
+ * Last Modified: Saturday, 2022/06/11 , 15:56:42                              *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -15,6 +15,7 @@ package model
 
 import (
 	"errors"
+	"fmt"
 
 	"gorm.io/gorm"
 )
@@ -66,13 +67,19 @@ func (t Tag) List(db *gorm.DB, pageOffset, pageSize int) ([]*Tag, error) {
 }
 
 func (t Tag) Create(db *gorm.DB) error {
+	db = db.Model(t).Where("name = ? AND  is_del = ?", t.Name, 0)
+
+	if err := db.First(&t).Error; err == nil {
+		return fmt.Errorf("tag: %v has been existed in the system",t.Name)
+	}
+
 	return db.Create(&t).Error
 }
 
 func (t Tag) Update(db *gorm.DB, values any) error {
 	db = db.Model(t).Where("id = ? AND  is_del = ?", t.ID, 0)
 	if err := db.First(&t).Error; err != nil {
-		if err == gorm.ErrRecordNotFound {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return errors.New("invalid tag_id,not existed")
 		}
 		return err

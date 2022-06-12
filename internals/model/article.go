@@ -1,10 +1,10 @@
 /*
  * File: \internals\model\article.go                                           *
- * Project: blog_service                                                       *
+ * Project: blog-service                                                       *
  * Created At: Thursday, 2022/06/2 , 17:58:50                                  *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Friday, 2022/06/3 , 09:46:31                                 *
+ * Last Modified: Sunday, 2022/06/12 , 09:51:25                                *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -13,7 +13,12 @@
  */
 package model
 
-import "gorm.io/gorm"
+import (
+	"errors"
+	"fmt"
+
+	"gorm.io/gorm"
+)
 
 type Article struct {
 	*Model
@@ -27,6 +32,28 @@ type Article struct {
 
 func (a Article) TableName() string {
 	return "blog_article"
+}
+
+func (a Article) Get(db *gorm.DB) (*Article, error) {
+	if a.ID != 0 {
+		if a.Title != "" {
+			db = db.Model(a).Where("id = ? AND title = ? AND is_del = ? AND state = ?", a.ID, a.Title, 0, a.State)
+		} else {
+			db = db.Model(a).Where("id = ? AND title = ? AND is_del = ? AND state = ?", a.ID, 0, a.State)
+		}
+	} else {
+		if a.Title != "" {
+			db = db.Model(a).Where("title = ? AND is_del = ? AND state = ?", a.Title, 0, a.State)
+		}
+	}
+	if err := db.First(&a).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errors.New("invalid article_id,not existed")
+		}
+		return nil, err
+	}
+
+	return &a, nil
 }
 
 func (a Article) Count(db *gorm.DB) (int64, error) {
@@ -46,12 +73,25 @@ func (a Article) Count(db *gorm.DB) (int64, error) {
 }
 
 func (a Article) Create(db *gorm.DB) error {
+	db = db.Model(a).Where("title = ? AND  is_del = ?", a.Title, 0)
+
+	if err := db.First(&a).Error; err == nil {
+		return fmt.Errorf("article: %v has been existed in the system", a.Title)
+	}
+
 	return db.Create(&a).Error
 }
 
-func (a Article) Update(db *gorm.DB) error {
-	db = db.Model(&Article{}).Where("id = ?", a.ID)
-	return db.Save(&a).Error
+func (a Article) Update(db *gorm.DB, values any) error {
+	db = db.Model(a).Where("id = ? AND  is_del = ?", a.ID, 0)
+	if err := db.First(&a).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return errors.New("invalid article_id,not existed")
+		}
+		return err
+	}
+
+	return db.Select("*").Updates(values).Error
 }
 
 func (a Article) Delete(db *gorm.DB) error {

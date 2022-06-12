@@ -16,4 +16,5 @@
 
 .vscode/
 storage/
+tests/
 oryxBuildBinary

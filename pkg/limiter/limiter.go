@@ -4,7 +4,7 @@
  * Created At: Wednesday, 2022/06/8 , 09:41:44                                 *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Wednesday, 2022/06/8 , 09:52:12                              *
+ * Last Modified: Friday, 2022/06/10 , 06:18:02                                *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -21,9 +21,9 @@ import (
 )
 
 type LimiterIface interface {
-	Key(c *gin.Context) string
-	GetBucket(key string) (*ratelimit.Bucket, bool)
-	AddBuckets(rules ...LimiterBucketRule) LimiterIface
+	Key(c *gin.Context) string // get name of the 
+	GetBucket(key string) (*ratelimit.Bucket, bool) // get a token bucket with name of key
+	AddBuckets(rules ...LimiterBucketRule) LimiterIface // add token buckets into the limiter
 }
 
 type Limiter struct {

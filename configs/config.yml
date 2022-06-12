@@ -23,7 +23,7 @@ Database:
   Username: root
   Password: toor
   # Host: db:3306
-  Host: 127.0.0.1:49155
+  Host: 127.0.0.1:3306
   DBName: blog
   TablePrefix: blog_
   Charset: utf8

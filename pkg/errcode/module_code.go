@@ -4,7 +4,7 @@
  * Created At: Monday, 2022/05/30 , 23:56:41                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Monday, 2022/06/6 , 15:28:11                                 *
+ * Last Modified: Sunday, 2022/06/12 , 09:59:00                                *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -25,6 +25,7 @@ var (
 	ErrorUpdateArticleFail  = NewError(20010008, "failed updating an article")
 	ErrorDeleteArticleFail  = NewError(20010009, "failed deleting an article")
 	ErrorCountArticleFail   = NewError(20010010, "failed counting articles")
+	ErrorGetArticleFail = NewError(20010011, "failed getting an article")
 
 	ErrorUploadFileFailed = NewError(2003001,"failed uploading a file")
 )

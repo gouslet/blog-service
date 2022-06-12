@@ -4,7 +4,7 @@
  * Created At: Sunday, 2022/05/29 , 00:40:25                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Monday, 2022/06/6 , 15:37:36                                 *
+ * Last Modified: Sunday, 2022/06/12 , 10:51:34                                *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -28,22 +28,69 @@ func NewArticle() Article {
 	return Article{}
 }
 
-// @Summary get an article with its title or id
+// @Summary get an article with its id
 // @Produce json
 // @Param id path int true "article id"
-// @Param name query string false "article name" maxlength(100)
 // @Param state query int false "state" Enum(0, 1) default(1)
 // @Success 200 {object} model.Article "succeeded"
 // @Failure 400 {object} errcode.Error "request errors"
 // @Failure 500 {object} errcode.Error "internal errors"
 // @Router       /api/v1/articles/{id} [get]
-func (t Article) Get(c *gin.Context) {
-	app.NewResponse(c).ToErrorResponse(errcode.ServerError)
+func (t Article) GetByID(c *gin.Context) {
+	param := service.ArticleGetByIDRequest{}
+	response := app.NewResponse(c)
+	valid, errs := app.BindAndValid(c, &param)
+
+	if !valid {
+		errRsp := errcode.InvalidParams.WithDetails(errs.Errors()...)
+		response.ToErrorResponse(errRsp)
+		return
+	}
+
+	svc := service.New(c.Request.Context())
+
+	article, err := svc.GetArticleByID(&param)
+	if err != nil {
+		response.ToErrorResponse(errcode.ErrorGetArticleFail)
+		return
+	}
+
+	response.ToResponse(article)
+}
+
+// @Summary get an article with its title
+// @Produce json
+// @Param title path string true "article title" maxlength(100)
+// @Param state query int false "state" Enum(0, 1) default(1)
+// @Success 200 {object} model.Article "succeeded"
+// @Failure 400 {object} errcode.Error "request errors"
+// @Failure 500 {object} errcode.Error "internal errors"
+// @Router       /api/v1/articles/{title} [get]
+func (t Article) GetByTitle(c *gin.Context) {
+	param := service.ArticleGetByTitleRequest{}
+	response := app.NewResponse(c)
+	valid, errs := app.BindAndValid(c, &param)
+
+	if !valid {
+		errRsp := errcode.InvalidParams.WithDetails(errs.Errors()...)
+		response.ToErrorResponse(errRsp)
+		return
+	}
+
+	svc := service.New(c.Request.Context())
+
+	article, err := svc.GetArticleByTitle(&param)
+	if err != nil {
+		response.ToErrorResponse(errcode.ErrorGetArticleFail)
+		return
+	}
+
+	response.ToResponse(article)
 }
 
 // @Summary get a list of articles
 // @Produce json
-// @Param name query string false "article name" maxlength(100)
+// @Param title query string false "article title" maxlength(100)
 // @Param state query int false "state" Enum(0, 1) default(1)
 // @Param page query int false "page index"
 // @Param page_size query int false "size per page"
@@ -68,8 +115,8 @@ func (a Article) List(c *gin.Context) {
 		Page:     app.GetPage(c),
 		PageSize: app.GetPageSize(c),
 	}
-	totalRows, err := svc.CountArticle(&service.CountArticleRequest{
-		Name:  param.Name,
+	totalRows, err := svc.CountArticle(&service.ArticleCountRequest{
+		Title: param.Title,
 		State: param.State,
 	})
 	if err != nil {
@@ -125,7 +172,7 @@ func (t Article) Create(c *gin.Context) {
 // @Param content body string false "Article content"
 // @Param cover_image_url body string false "Article cover image url" maxlength(255)
 // @Param state body int false "state" Enum(0, 1) default(1)
-// @Param created_by body string true "creator" minlength(3) maxlength(100)
+// @Param updated_by body string true "creator" minlength(3) maxlength(100)
 // @Success 200 {object} model.Article "succeeded"
 // @Failure 400 {object} errcode.Error "request errors"
 // @Failure 500 {object} errcode.Error "internal errors"
@@ -154,7 +201,7 @@ func (t Article) Update(c *gin.Context) {
 // @Summary delete an article with given title or id
 // @Produce json
 // @Param id path int true "article id"
-// @Param name query string false "article name" maxlength(100)
+// @Param title query string false "article title" maxlength(100)
 // @Success 200 {object} model.Article "succeeded"
 // @Failure 400 {object} errcode.Error "request errors"
 // @Failure 500 {object} errcode.Error "internal errors"

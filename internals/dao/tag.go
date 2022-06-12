@@ -4,7 +4,7 @@
  * Created At: Monday, 2022/05/30 , 21:59:15                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Sunday, 2022/06/5 , 11:16:32                                 *
+ * Last Modified: Saturday, 2022/06/11 , 16:00:56                              *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -43,10 +43,8 @@ func (d *Dao) CreateTag(name string, state uint8, createdBy string) error {
 
 func (d *Dao) UpdateTag(id uint32, name string, state uint8, modifiedBy string) error {
 	tags := model.Tag{
-
 		Model: &model.Model{
-			ID:         id,
-			ModifiedBy: modifiedBy,
+			ID: id,
 		},
 	}
 	values := map[string]any{
