@@ -273,36 +273,6 @@ paths:
           schema:
             $ref: '#/definitions/errcode.Error'
       summary: update an article
-  /api/v1/articles/{title}:
-    get:
-      parameters:
-      - description: article title
-        in: path
-        maxLength: 100
-        name: title
-        required: true
-        type: string
-      - default: 1
-        description: state
-        in: query
-        name: state
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: succeeded
-          schema:
-            $ref: '#/definitions/model.Article'
-        "400":
-          description: request errors
-          schema:
-            $ref: '#/definitions/errcode.Error'
-        "500":
-          description: internal errors
-          schema:
-            $ref: '#/definitions/errcode.Error'
-      summary: get an article with its title
   /api/v1/tags:
     get:
       parameters:

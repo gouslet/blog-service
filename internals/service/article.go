@@ -4,7 +4,7 @@
  * Created At: Thursday, 2022/06/2 , 23:45:37                                  *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Sunday, 2022/06/12 , 10:46:33                                *
+ * Last Modified: Sunday, 2022/06/12 , 14:29:36                                *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -19,15 +19,15 @@ import (
 	"go_start/blog_service/pkg/app"
 )
 
-type ArticleGetByIDRequest struct {
+type ArticleGetRequest struct {
 	ID    uint32 `form:"id" binding:"required,gte=1"`
 	State uint8  `form:"state,default=1" binding:"oneof=0 1"`
 }
 
-type ArticleGetByTitleRequest struct {
-	Title string `form:"title" binding:"required,max=100"`
-	State uint8  `form:"state,default=1" binding:"oneof=0 1"`
-}
+// type ArticleGetByTitleRequest struct {
+// 	Title string `form:"title" binding:"required,max=100"`
+// 	State uint8  `form:"state,default=1" binding:"oneof=0 1"`
+// }
 
 type ArticleCountRequest struct {
 	Title string `form:"title" binding:"max=100"`
@@ -63,13 +63,13 @@ type DeleteArticleRequest struct {
 	Title string `form:"title" binding:"min=3,max=100"`
 }
 
-func (svc *Service) GetArticleByID(param *ArticleGetByIDRequest) (*model.Article, error) {
+func (svc *Service) GetArticle(param *ArticleGetRequest) (*model.Article, error) {
 	return svc.dao.GetArticle(param.ID, "", param.State)
 }
 
-func (svc *Service) GetArticleByTitle(param *ArticleGetByTitleRequest) (*model.Article, error) {
-	return svc.dao.GetArticle(0,param.Title, param.State)
-}
+// func (svc *Service) GetArticleByTitle(param *ArticleGetByTitleRequest) (*model.Article, error) {
+// 	return svc.dao.GetArticle(0,param.Title, param.State)
+// }
 
 func (svc *Service) GetArticleList(param *ArticleListRequest, pager *app.Pager) ([]*model.Article, error) {
 	return svc.dao.GetArticleList(param.Title, param.State, pager.Page, pager.PageSize)

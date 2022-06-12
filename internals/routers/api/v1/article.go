@@ -4,7 +4,7 @@
  * Created At: Sunday, 2022/05/29 , 00:40:25                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Sunday, 2022/06/12 , 10:51:34                                *
+ * Last Modified: Sunday, 2022/06/12 , 14:30:02                                *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -36,8 +36,8 @@ func NewArticle() Article {
 // @Failure 400 {object} errcode.Error "request errors"
 // @Failure 500 {object} errcode.Error "internal errors"
 // @Router       /api/v1/articles/{id} [get]
-func (t Article) GetByID(c *gin.Context) {
-	param := service.ArticleGetByIDRequest{}
+func (t Article) Get(c *gin.Context) {
+	param := service.ArticleGetRequest{}
 	response := app.NewResponse(c)
 	valid, errs := app.BindAndValid(c, &param)
 
@@ -49,7 +49,7 @@ func (t Article) GetByID(c *gin.Context) {
 
 	svc := service.New(c.Request.Context())
 
-	article, err := svc.GetArticleByID(&param)
+	article, err := svc.GetArticle(&param)
 	if err != nil {
 		response.ToErrorResponse(errcode.ErrorGetArticleFail)
 		return
@@ -58,35 +58,35 @@ func (t Article) GetByID(c *gin.Context) {
 	response.ToResponse(article)
 }
 
-// @Summary get an article with its title
-// @Produce json
-// @Param title path string true "article title" maxlength(100)
-// @Param state query int false "state" Enum(0, 1) default(1)
-// @Success 200 {object} model.Article "succeeded"
-// @Failure 400 {object} errcode.Error "request errors"
-// @Failure 500 {object} errcode.Error "internal errors"
-// @Router       /api/v1/articles/{title} [get]
-func (t Article) GetByTitle(c *gin.Context) {
-	param := service.ArticleGetByTitleRequest{}
-	response := app.NewResponse(c)
-	valid, errs := app.BindAndValid(c, &param)
+// // @Summary get an article with its title
+// // @Produce json
+// // @Param title path string true "article title" maxlength(100)
+// // @Param state query int false "state" Enum(0, 1) default(1)
+// // @Success 200 {object} model.Article "succeeded"
+// // @Failure 400 {object} errcode.Error "request errors"
+// // @Failure 500 {object} errcode.Error "internal errors"
+// // @Router       /api/v1/articles/{title} [get]
+// func (t Article) GetByTitle(c *gin.Context) {
+// 	param := service.ArticleGetByTitleRequest{}
+// 	response := app.NewResponse(c)
+// 	valid, errs := app.BindAndValid(c, &param)
 
-	if !valid {
-		errRsp := errcode.InvalidParams.WithDetails(errs.Errors()...)
-		response.ToErrorResponse(errRsp)
-		return
-	}
+// 	if !valid {
+// 		errRsp := errcode.InvalidParams.WithDetails(errs.Errors()...)
+// 		response.ToErrorResponse(errRsp)
+// 		return
+// 	}
 
-	svc := service.New(c.Request.Context())
+// 	svc := service.New(c.Request.Context())
 
-	article, err := svc.GetArticleByTitle(&param)
-	if err != nil {
-		response.ToErrorResponse(errcode.ErrorGetArticleFail)
-		return
-	}
+// 	article, err := svc.GetArticleByTitle(&param)
+// 	if err != nil {
+// 		response.ToErrorResponse(errcode.ErrorGetArticleFail)
+// 		return
+// 	}
 
-	response.ToResponse(article)
-}
+// 	response.ToResponse(article)
+// }
 
 // @Summary get a list of articles
 // @Produce json

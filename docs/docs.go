@@ -339,51 +339,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/articles/{title}": {
-            "get": {
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "get an article with its title",
-                "parameters": [
-                    {
-                        "maxLength": 100,
-                        "type": "string",
-                        "description": "article title",
-                        "name": "title",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "default": 1,
-                        "description": "state",
-                        "name": "state",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "succeeded",
-                        "schema": {
-                            "$ref": "#/definitions/model.Article"
-                        }
-                    },
-                    "400": {
-                        "description": "request errors",
-                        "schema": {
-                            "$ref": "#/definitions/errcode.Error"
-                        }
-                    },
-                    "500": {
-                        "description": "internal errors",
-                        "schema": {
-                            "$ref": "#/definitions/errcode.Error"
-                        }
-                    }
-                }
-            }
-        },
         "/api/v1/tags": {
             "get": {
                 "produces": [

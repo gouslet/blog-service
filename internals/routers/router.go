@@ -4,7 +4,7 @@
  * Created At: Sunday, 2022/05/29 , 00:36:09                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Sunday, 2022/06/12 , 10:17:12                                *
+ * Last Modified: Sunday, 2022/06/12 , 14:30:03                                *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -66,8 +66,8 @@ func NewRouter() *gin.Engine {
 		apiV1.DELETE("/articles/:id", article.Delete)
 		apiV1.PUT("/articles/:id", article.Update)
 		apiV1.PATCH("/articles/:id/state", article.Update)
-		apiV1.GET("/articles/:id", article.GetByID)
-		apiV1.GET("/articles/:title", article.GetByTitle)
+		apiV1.GET("/articles/:id", article.Get)
+		// apiV1.GET("/articles/:title", article.GetByTitle)
 		apiV1.GET("/articles", article.List)
 
 	}

@@ -4,7 +4,7 @@
  * Created At: Thursday, 2022/06/2 , 17:58:50                                  *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Sunday, 2022/06/12 , 09:51:25                                *
+ * Last Modified: Sunday, 2022/06/12 , 14:31:08                                *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -35,17 +35,7 @@ func (a Article) TableName() string {
 }
 
 func (a Article) Get(db *gorm.DB) (*Article, error) {
-	if a.ID != 0 {
-		if a.Title != "" {
-			db = db.Model(a).Where("id = ? AND title = ? AND is_del = ? AND state = ?", a.ID, a.Title, 0, a.State)
-		} else {
-			db = db.Model(a).Where("id = ? AND title = ? AND is_del = ? AND state = ?", a.ID, 0, a.State)
-		}
-	} else {
-		if a.Title != "" {
-			db = db.Model(a).Where("title = ? AND is_del = ? AND state = ?", a.Title, 0, a.State)
-		}
-	}
+	db = db.Model(a).Where("id = ? AND title = ? AND is_del = ? AND state = ?", a.ID, 0, a.State)
 	if err := db.First(&a).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, errors.New("invalid article_id,not existed")
