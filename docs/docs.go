@@ -28,8 +28,8 @@ const docTemplate = `{
                     {
                         "maxLength": 100,
                         "type": "string",
-                        "description": "article name",
-                        "name": "name",
+                        "description": "article title",
+                        "name": "title",
                         "in": "query"
                     },
                     {
@@ -167,7 +167,7 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
-                "summary": "get an article with its title or id",
+                "summary": "get an article with its id",
                 "parameters": [
                     {
                         "type": "integer",
@@ -175,13 +175,6 @@ const docTemplate = `{
                         "name": "id",
                         "in": "path",
                         "required": true
-                    },
-                    {
-                        "maxLength": 100,
-                        "type": "string",
-                        "description": "article name",
-                        "name": "name",
-                        "in": "query"
                     },
                     {
                         "type": "integer",
@@ -274,7 +267,7 @@ const docTemplate = `{
                         "maxLength": 100,
                         "minLength": 3,
                         "description": "creator",
-                        "name": "created_by",
+                        "name": "updated_by",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -319,8 +312,53 @@ const docTemplate = `{
                     {
                         "maxLength": 100,
                         "type": "string",
-                        "description": "article name",
-                        "name": "name",
+                        "description": "article title",
+                        "name": "title",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "succeeded",
+                        "schema": {
+                            "$ref": "#/definitions/model.Article"
+                        }
+                    },
+                    "400": {
+                        "description": "request errors",
+                        "schema": {
+                            "$ref": "#/definitions/errcode.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "internal errors",
+                        "schema": {
+                            "$ref": "#/definitions/errcode.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/articles/{title}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "get an article with its title",
+                "parameters": [
+                    {
+                        "maxLength": 100,
+                        "type": "string",
+                        "description": "article title",
+                        "name": "title",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "state",
+                        "name": "state",
                         "in": "query"
                     }
                 ],
@@ -355,6 +393,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "maxLength": 100,
+                        "minLength": 3,
                         "type": "string",
                         "description": "tag name",
                         "name": "name",
@@ -409,6 +448,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "maxLength": 100,
+                        "minLength": 3,
                         "description": "tag name",
                         "name": "name",
                         "in": "body",

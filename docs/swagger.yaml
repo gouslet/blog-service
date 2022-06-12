@@ -61,10 +61,10 @@ paths:
   /api/v1/articles:
     get:
       parameters:
-      - description: article name
+      - description: article title
         in: query
         maxLength: 100
-        name: name
+        name: title
         type: string
       - default: 1
         description: state
@@ -163,10 +163,10 @@ paths:
         name: id
         required: true
         type: integer
-      - description: article name
+      - description: article title
         in: query
         maxLength: 100
-        name: name
+        name: title
         type: string
       produces:
       - application/json
@@ -191,11 +191,6 @@ paths:
         name: id
         required: true
         type: integer
-      - description: article name
-        in: query
-        maxLength: 100
-        name: name
-        type: string
       - default: 1
         description: state
         in: query
@@ -216,7 +211,7 @@ paths:
           description: internal errors
           schema:
             $ref: '#/definitions/errcode.Error'
-      summary: get an article with its title or id
+      summary: get an article with its id
     put:
       parameters:
       - description: article id
@@ -258,7 +253,7 @@ paths:
         in: body
         maxLength: 100
         minLength: 3
-        name: created_by
+        name: updated_by
         required: true
         schema:
           type: string
@@ -278,12 +273,43 @@ paths:
           schema:
             $ref: '#/definitions/errcode.Error'
       summary: update an article
+  /api/v1/articles/{title}:
+    get:
+      parameters:
+      - description: article title
+        in: path
+        maxLength: 100
+        name: title
+        required: true
+        type: string
+      - default: 1
+        description: state
+        in: query
+        name: state
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: succeeded
+          schema:
+            $ref: '#/definitions/model.Article'
+        "400":
+          description: request errors
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: internal errors
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      summary: get an article with its title
   /api/v1/tags:
     get:
       parameters:
       - description: tag name
         in: query
         maxLength: 100
+        minLength: 3
         name: name
         type: string
       - default: 1
@@ -320,6 +346,7 @@ paths:
       - description: tag name
         in: body
         maxLength: 100
+        minLength: 3
         name: name
         required: true
         schema:
