@@ -4,7 +4,7 @@
  * Created At: Sunday, 2022/05/29 , 00:36:09                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Sunday, 2022/06/12 , 14:30:03                                *
+ * Last Modified: Monday, 2022/06/13 , 12:43:32                                *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -52,8 +52,9 @@ func NewRouter() *gin.Engine {
 
 	tag := api.NewTag()
 	article := api.NewArticle()
+	articleTag := api.NewArticleTag()
 	apiV1 := r.Group("/api/v1")
-	apiV1.Use(middleware.JWT())
+	// apiV1.Use(middleware.JWT())
 
 	{
 		apiV1.POST("/tags", tag.Create)
@@ -70,6 +71,11 @@ func NewRouter() *gin.Engine {
 		// apiV1.GET("/articles/:title", article.GetByTitle)
 		apiV1.GET("/articles", article.List)
 
+		apiV1.POST("/articletags", articleTag.Create)
+		apiV1.DELETE("/articletags/:id", articleTag.Delete)
+		apiV1.PUT("/articletags/:id", articleTag.Update)
+		apiV1.GET("/articletags/:id", articleTag.Get)
+		apiV1.GET("/articletags", articleTag.List)
 	}
 
 	upload := api.NewUpload()

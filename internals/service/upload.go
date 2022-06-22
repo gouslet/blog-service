@@ -4,7 +4,7 @@
  * Created At: Monday, 2022/06/6 , 15:11:49                                    *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Monday, 2022/06/6 , 15:26:28                                 *
+ * Last Modified: Wednesday, 2022/06/22 , 09:30:37                             *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -19,6 +19,7 @@ import (
 	"go_start/blog_service/pkg/upload"
 	"mime/multipart"
 	"os"
+	"path/filepath"
 )
 
 type FileInfo struct {
@@ -29,7 +30,7 @@ type FileInfo struct {
 func (svc *Service) UploadFile(fileType upload.FileType, file multipart.File, fileHeader *multipart.FileHeader) (*FileInfo, error) {
 	fileName := upload.GetFileName(fileHeader.Filename)
 	uploadSavePath := upload.GetSavePath()
-	dst := uploadSavePath + "/" + fileName
+	dst := filepath.Join(uploadSavePath,fileName)
 
 	if !upload.CheckContainExt(fileType, fileName) {
 		return nil, errors.New("file suffix is not supported")

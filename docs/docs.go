@@ -23,18 +23,14 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "article"
+                ],
                 "summary": "get a list of articles",
                 "parameters": [
                     {
-                        "maxLength": 100,
-                        "type": "string",
-                        "description": "article title",
-                        "name": "title",
-                        "in": "query"
-                    },
-                    {
                         "type": "integer",
-                        "default": 1,
+                        "default": 2,
                         "description": "state",
                         "name": "state",
                         "in": "query"
@@ -56,19 +52,31 @@ const docTemplate = `{
                     "200": {
                         "description": "succeeded",
                         "schema": {
-                            "$ref": "#/definitions/model.Article"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/app.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/model.ArticleList"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "400": {
                         "description": "request errors",
                         "schema": {
-                            "$ref": "#/definitions/errcode.Error"
+                            "$ref": "#/definitions/app.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "internal errors",
                         "schema": {
-                            "$ref": "#/definitions/errcode.Error"
+                            "$ref": "#/definitions/app.ErrorResponse"
                         }
                     }
                 }
@@ -76,6 +84,9 @@ const docTemplate = `{
             "post": {
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "article"
                 ],
                 "summary": "create a new article",
                 "parameters": [
@@ -144,19 +155,31 @@ const docTemplate = `{
                     "200": {
                         "description": "succeeded",
                         "schema": {
-                            "$ref": "#/definitions/model.Article"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/app.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/model.ArticleWithTags"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "400": {
                         "description": "request errors",
                         "schema": {
-                            "$ref": "#/definitions/errcode.Error"
+                            "$ref": "#/definitions/app.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "internal errors",
                         "schema": {
-                            "$ref": "#/definitions/errcode.Error"
+                            "$ref": "#/definitions/app.ErrorResponse"
                         }
                     }
                 }
@@ -166,6 +189,9 @@ const docTemplate = `{
             "get": {
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "article"
                 ],
                 "summary": "get an article with its id",
                 "parameters": [
@@ -188,19 +214,31 @@ const docTemplate = `{
                     "200": {
                         "description": "succeeded",
                         "schema": {
-                            "$ref": "#/definitions/model.Article"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/app.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/model.ArticleWithTags"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "400": {
                         "description": "request errors",
                         "schema": {
-                            "$ref": "#/definitions/errcode.Error"
+                            "$ref": "#/definitions/app.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "internal errors",
                         "schema": {
-                            "$ref": "#/definitions/errcode.Error"
+                            "$ref": "#/definitions/app.ErrorResponse"
                         }
                     }
                 }
@@ -208,6 +246,9 @@ const docTemplate = `{
             "put": {
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "article"
                 ],
                 "summary": "update an article",
                 "parameters": [
@@ -279,19 +320,31 @@ const docTemplate = `{
                     "200": {
                         "description": "succeeded",
                         "schema": {
-                            "$ref": "#/definitions/model.Article"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/app.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/model.ArticleWithTags"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "400": {
                         "description": "request errors",
                         "schema": {
-                            "$ref": "#/definitions/errcode.Error"
+                            "$ref": "#/definitions/app.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "internal errors",
                         "schema": {
-                            "$ref": "#/definitions/errcode.Error"
+                            "$ref": "#/definitions/app.ErrorResponse"
                         }
                     }
                 }
@@ -299,6 +352,9 @@ const docTemplate = `{
             "delete": {
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "article"
                 ],
                 "summary": "delete an article with given title or id",
                 "parameters": [
@@ -308,12 +364,62 @@ const docTemplate = `{
                         "name": "id",
                         "in": "path",
                         "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "succeeded",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/app.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/model.ArticleWithTags"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "request errors",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "internal errors",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/articletags": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "articletag"
+                ],
+                "summary": "get a list of articletags",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "page index",
+                        "name": "page",
+                        "in": "query"
                     },
                     {
-                        "maxLength": 100,
-                        "type": "string",
-                        "description": "article title",
-                        "name": "title",
+                        "type": "integer",
+                        "description": "size per page",
+                        "name": "page_size",
                         "in": "query"
                     }
                 ],
@@ -321,19 +427,284 @@ const docTemplate = `{
                     "200": {
                         "description": "succeeded",
                         "schema": {
-                            "$ref": "#/definitions/model.Article"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/app.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/model.ArticleTagList"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "400": {
                         "description": "request errors",
                         "schema": {
-                            "$ref": "#/definitions/errcode.Error"
+                            "$ref": "#/definitions/app.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "internal errors",
                         "schema": {
-                            "$ref": "#/definitions/errcode.Error"
+                            "$ref": "#/definitions/app.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "articletag"
+                ],
+                "summary": "create a new articletag",
+                "parameters": [
+                    {
+                        "description": "article id",
+                        "name": "article_id",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "tag id",
+                        "name": "tag_id",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "maxLength": 100,
+                        "minLength": 3,
+                        "description": "creator",
+                        "name": "created_by",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "succeeded",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/app.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/model.ArticleTag"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "request errors",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "internal errors",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/articletags/{id}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "articletag"
+                ],
+                "summary": "get an articletag with its id",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "articletag id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "succeeded",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/app.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/model.ArticleTag"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "request errors",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "internal errors",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "articletag"
+                ],
+                "summary": "update an articletag",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "articletag id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "article id",
+                        "name": "article_id",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "tag id",
+                        "name": "tag_id",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "maxLength": 100,
+                        "minLength": 3,
+                        "description": "creator",
+                        "name": "updated_by",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "succeeded",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/app.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/model.ArticleTag"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "request errors",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "internal errors",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "articletag"
+                ],
+                "summary": "delete an articletag with given title or id",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "articletag id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "succeeded",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/app.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/model.ArticleTag"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "request errors",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "internal errors",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrorResponse"
                         }
                     }
                 }
@@ -344,19 +715,14 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "tags"
+                ],
                 "summary": "get a list of tags",
                 "parameters": [
                     {
-                        "maxLength": 100,
-                        "minLength": 3,
-                        "type": "string",
-                        "description": "tag name",
-                        "name": "name",
-                        "in": "query"
-                    },
-                    {
                         "type": "integer",
-                        "default": 1,
+                        "default": 2,
                         "description": "state",
                         "name": "state",
                         "in": "query"
@@ -378,19 +744,31 @@ const docTemplate = `{
                     "200": {
                         "description": "succeeded",
                         "schema": {
-                            "$ref": "#/definitions/model.Tag"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/app.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/model.TagList"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "400": {
                         "description": "request errors",
                         "schema": {
-                            "$ref": "#/definitions/errcode.Error"
+                            "$ref": "#/definitions/app.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "internal errors",
                         "schema": {
-                            "$ref": "#/definitions/errcode.Error"
+                            "$ref": "#/definitions/app.ErrorResponse"
                         }
                     }
                 }
@@ -398,6 +776,9 @@ const docTemplate = `{
             "post": {
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "tags"
                 ],
                 "summary": "create a new tag",
                 "parameters": [
@@ -437,19 +818,31 @@ const docTemplate = `{
                     "200": {
                         "description": "succeeded",
                         "schema": {
-                            "$ref": "#/definitions/model.Tag"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/app.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/model.Tag"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "400": {
                         "description": "request errors",
                         "schema": {
-                            "$ref": "#/definitions/errcode.Error"
+                            "$ref": "#/definitions/app.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "internal errors",
                         "schema": {
-                            "$ref": "#/definitions/errcode.Error"
+                            "$ref": "#/definitions/app.ErrorResponse"
                         }
                     }
                 }
@@ -459,6 +852,9 @@ const docTemplate = `{
             "put": {
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "tags"
                 ],
                 "summary": "update a tag",
                 "parameters": [
@@ -492,7 +888,7 @@ const docTemplate = `{
                         "maxLength": 100,
                         "minLength": 3,
                         "description": "modifier",
-                        "name": "modified_by",
+                        "name": "updated_by",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -504,19 +900,31 @@ const docTemplate = `{
                     "200": {
                         "description": "succeeded",
                         "schema": {
-                            "$ref": "#/definitions/model.Tag"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/app.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/model.Tag"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "400": {
                         "description": "request errors",
                         "schema": {
-                            "$ref": "#/definitions/errcode.Error"
+                            "$ref": "#/definitions/app.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "internal errors",
                         "schema": {
-                            "$ref": "#/definitions/errcode.Error"
+                            "$ref": "#/definitions/app.ErrorResponse"
                         }
                     }
                 }
@@ -524,6 +932,9 @@ const docTemplate = `{
             "delete": {
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "tags"
                 ],
                 "summary": "delete a tag",
                 "parameters": [
@@ -539,19 +950,157 @@ const docTemplate = `{
                     "200": {
                         "description": "succeeded",
                         "schema": {
-                            "$ref": "#/definitions/model.Tag"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/app.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/model.Tag"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "400": {
                         "description": "request errors",
                         "schema": {
-                            "$ref": "#/definitions/errcode.Error"
+                            "$ref": "#/definitions/app.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "internal errors",
                         "schema": {
-                            "$ref": "#/definitions/errcode.Error"
+                            "$ref": "#/definitions/app.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/tas/{id}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tags"
+                ],
+                "summary": "get a tag with its id",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "article id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "state",
+                        "name": "state",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "succeeded",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/app.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/model.Tag"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "request errors",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "internal errors",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/upload/file": {
+            "post": {
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "upload"
+                ],
+                "summary": "upload a file and get access url back",
+                "parameters": [
+                    {
+                        "default": 1,
+                        "description": "file type",
+                        "name": "type",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "file",
+                        "name": "file",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "succeeded",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/app.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/gin.H"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "request errors",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "internal errors",
+                        "schema": {
+                            "$ref": "#/definitions/app.ErrorResponse"
                         }
                     }
                 }
@@ -559,10 +1108,142 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "errcode.Error": {
-            "type": "object"
+        "app.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "Code defines the business error code.",
+                    "type": "integer"
+                },
+                "errors": {
+                    "$ref": "#/definitions/errors.MyError"
+                },
+                "message": {
+                    "description": "Message contains the detail of this message.\nThis message is suitable to be exposed to external",
+                    "type": "string"
+                }
+            }
         },
-        "model.Article": {
+        "app.Pager": {
+            "type": "object",
+            "properties": {
+                "page": {
+                    "type": "integer"
+                },
+                "page_size": {
+                    "type": "integer"
+                },
+                "total_rows": {
+                    "type": "integer"
+                }
+            }
+        },
+        "app.SuccessResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "Code defines the business error code.",
+                    "type": "integer"
+                },
+                "data": {
+                    "description": "Reference returns the reference document which maybe useful to solve this error.",
+                    "type": "any"
+                },
+                "message": {
+                    "description": "Message contains the detail of this message.\nThis message is suitable to be exposed to external",
+                    "type": "string"
+                }
+            }
+        },
+        "errors.MyError": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "Code defines the business error code.",
+                    "type": "integer"
+                },
+                "details": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/errors.MyError"
+                    }
+                },
+                "message": {
+                    "description": "Message contains the detail of this message.\nThis message is suitable to be exposed to external",
+                    "type": "string"
+                },
+                "specific": {
+                    "type": "string"
+                }
+            }
+        },
+        "gin.H": {
+            "type": "object",
+            "additionalProperties": {
+                "type": "any"
+            }
+        },
+        "model.ArticleList": {
+            "type": "object",
+            "properties": {
+                "articles": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.ArticleWithTags"
+                    }
+                },
+                "pager": {
+                    "$ref": "#/definitions/app.Pager"
+                }
+            }
+        },
+        "model.ArticleTag": {
+            "type": "object",
+            "properties": {
+                "article_id": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "integer"
+                },
+                "created_by": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "is_del": {
+                    "type": "integer"
+                },
+                "tag_id": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "integer"
+                },
+                "updated_by": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.ArticleTagList": {
+            "type": "object",
+            "properties": {
+                "article_tags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.ArticleTag"
+                    }
+                },
+                "pager": {
+                    "$ref": "#/definitions/app.Pager"
+                }
+            }
+        },
+        "model.ArticleWithTags": {
             "type": "object",
             "properties": {
                 "content": {
@@ -589,16 +1270,22 @@ const docTemplate = `{
                 "is_del": {
                     "type": "integer"
                 },
-                "modified_at": {
-                    "type": "integer"
-                },
-                "modified_by": {
-                    "type": "string"
-                },
                 "state": {
                     "type": "integer"
                 },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Tag"
+                    }
+                },
                 "title": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "integer"
+                },
+                "updated_by": {
                     "type": "string"
                 }
             }
@@ -621,17 +1308,31 @@ const docTemplate = `{
                 "is_del": {
                     "type": "integer"
                 },
-                "modified_at": {
-                    "type": "integer"
-                },
-                "modified_by": {
-                    "type": "string"
-                },
                 "name": {
                     "type": "string"
                 },
                 "state": {
                     "type": "integer"
+                },
+                "updated_at": {
+                    "type": "integer"
+                },
+                "updated_by": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.TagList": {
+            "type": "object",
+            "properties": {
+                "pager": {
+                    "$ref": "#/definitions/app.Pager"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Tag"
+                    }
                 }
             }
         }

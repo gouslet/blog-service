@@ -1,10 +1,10 @@
 /*
  * File: \pkg\app\form.go                                                      *
- * Project: blog_service                                                       *
+ * Project: blog-service                                                       *
  * Created At: Monday, 2022/05/30 , 20:51:32                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Monday, 2022/05/30 , 21:18:42                                *
+ * Last Modified: Tuesday, 2022/06/21 , 13:21:21                               *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -47,24 +47,48 @@ func (v ValidErrors) Errors() []string {
 }
 
 func BindAndValid(c *gin.Context, v any) (bool, ValidErrors) {
-	var errs ValidErrors
+	var validErrs ValidErrors
+	// var errs []error
+	// errs = append(errs, c.BindUri(v), c.Bind(v))
+	// for _, err := range errs {
+	// 	if err != nil {
+	// 		v := c.Value("trans")
+	// 		trans, _ := v.(ut.Translator)
+	// 		verrs, ok := err.(val.ValidationErrors)
+
+	// 		if !ok {
+	// 			continue
+	// 		}
+
+	// 		for key, value := range verrs.Translate(trans) {
+	// 			validErrs = append(validErrs, &ValidError{
+	// 				Key:     key,
+	// 				Message: value,
+	// 			})
+	// 		}
+	// 	}
+
+	// }
+
+	// if len(validErrs) != 0 {
+	// 	return false, validErrs
+	// }
 	err := c.ShouldBind(v)
 	if err != nil {
 		v := c.Value("trans")
-		trans, _ := v.(ut.Translator)
-		verrs, ok := err.(val.ValidationErrors)
+			trans, _ := v.(ut.Translator)
+			verrs, ok := err.(val.ValidationErrors)
 
-		if !ok {
-			return false, errs
-		}
+			if !ok {
+				return false,validErrs
+			}
 
-		for key, value := range verrs.Translate(trans) {
-			errs = append(errs, &ValidError{
-				Key:     key,
-				Message: value,
-			})
-		}
-		return false, errs
+			for key, value := range verrs.Translate(trans) {
+				validErrs = append(validErrs, &ValidError{
+					Key:     key,
+					Message: value,
+				})
+			}
 	}
 
 	return true, nil

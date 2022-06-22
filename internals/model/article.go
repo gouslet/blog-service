@@ -4,7 +4,7 @@
  * Created At: Thursday, 2022/06/2 , 17:58:50                                  *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Sunday, 2022/06/12 , 14:31:08                                *
+ * Last Modified: Tuesday, 2022/06/21 , 16:43:45                               *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -14,14 +14,16 @@
 package model
 
 import (
-	"errors"
-	"fmt"
+	"go_start/blog_service/pkg/app"
+	"go_start/blog_service/pkg/errcode"
+
+	"github.com/elchn/errors"
 
 	"gorm.io/gorm"
 )
 
 type Article struct {
-	*Model
+	Model `gorm:"embedded"`
 
 	Title         string `json:"title"`
 	Desc          string `json:"desc"`
@@ -34,26 +36,45 @@ func (a Article) TableName() string {
 	return "blog_article"
 }
 
-func (a Article) Get(db *gorm.DB) (*Article, error) {
-	db = db.Model(a).Where("id = ? AND title = ? AND is_del = ? AND state = ?", a.ID, 0, a.State)
-	if err := db.First(&a).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, errors.New("invalid article_id,not existed")
-		}
-		return nil, err
+type ArticleList struct {
+	Articles []ArticleWithTags `json:"articles"`
+	Pager    *app.Pager        `json:"pager"`
+}
+
+type ArticleWithTags struct {
+	Article `gorm:"embedded"`
+	Tags    []Tag `json:"tags" gorm:"many2many:blog_article_tag;joinForeignKey:article_id;omitempty;Constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+}
+
+func (awt ArticleWithTags) TableName() string {
+	return "blog_article"
+}
+
+func (a Article) Get(db *gorm.DB) (ArticleWithTags, error) {
+	article := ArticleWithTags{
+		Article: a,
 	}
 
-	return &a, nil
+	// if err := db.First(&article).Error; err != nil {
+	// 	if errors.Is(err, gorm.ErrRecordNotFound) {
+	// 		return ArticleWithTags{}, errors.WithCode(errcode.ErrArticleNotFound,"")
+	// 	}
+	// 	return ArticleWithTags{}, err
+	// }
+	err := db.First(&article).Error
+
+	return article, err
 }
 
 func (a Article) Count(db *gorm.DB) (int64, error) {
 	var count int64
 
-	if a.Title != "" {
-		db = db.Where("title = ?", a.Title)
+	if a.State != 2 {
+		db = db.Where("state = ?", a.State)
+	} else {
+		db = db.Where("state IN (0,1)")
 	}
-
-	db = db.Where("state = ?", a.State)
+	// db = db.Where("state = ?", a.State)
 
 	if err := db.Model(&a).Count(&count).Error; err != nil {
 		return 0, err
@@ -62,49 +83,70 @@ func (a Article) Count(db *gorm.DB) (int64, error) {
 	return count, nil
 }
 
-func (a Article) Create(db *gorm.DB) error {
-	db = db.Model(a).Where("title = ? AND  is_del = ?", a.Title, 0)
-
-	if err := db.First(&a).Error; err == nil {
-		return fmt.Errorf("article: %v has been existed in the system", a.Title)
+func (a Article) Create(db *gorm.DB) (ArticleWithTags, error) {
+	article := ArticleWithTags{
+		Article: a,
 	}
 
-	return db.Create(&a).Error
+	rows := db.Where(&article).Find(&article).RowsAffected
+	if rows != 0 {
+		return article, errors.WithCode(errcode.ErrArticleAlreadyExist, "article with title %q already exists", a.Title)
+	}
+	db.Error = nil
+	err := db.Create(&article).Error
+
+	return article, err
 }
 
-func (a Article) Update(db *gorm.DB, values any) error {
-	db = db.Model(a).Where("id = ? AND  is_del = ?", a.ID, 0)
-	if err := db.First(&a).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return errors.New("invalid article_id,not existed")
-		}
-		return err
+func (a Article) Update(db *gorm.DB, values any) (ArticleWithTags, error) {
+	article := ArticleWithTags{
+		Article: a,
 	}
 
-	return db.Select("*").Updates(values).Error
+	err := db.First(&article).Error
+	if err != nil {
+		return ArticleWithTags{}, err
+	}
+
+	err = db.Model(&article).Updates(values).Error
+
+	return article, err
 }
 
-func (a Article) Delete(db *gorm.DB) error {
-	return db.Where("id = ?", a.ID).Delete(&a).Error
+func (a Article) Delete(db *gorm.DB) (ArticleWithTags, error) {
+	article := ArticleWithTags{
+		Article: a,
+	}
+
+	err := db.First(&article).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return ArticleWithTags{}, err
+	}
+	err = db.Delete(&article).Error
+
+	return article, err
 }
 
-func (a Article) List(db *gorm.DB, pageOffset, pageSize int) ([]*Article, error) {
-	var articles []*Article
+func (a Article) List(db *gorm.DB, pager *app.Pager) (ArticleList, error) {
+	var articles []ArticleWithTags
 	var err error
+	pageOffSet := app.GetPageOffSet(pager.Page, pager.PageSize)
 
-	if pageOffset >= 0 && pageSize > 0 {
-		db = db.Offset(pageOffset).Limit(pageSize)
+	if pageOffSet >= 0 && pager.PageSize > 0 {
+		db = db.Offset(pageOffSet).Limit(pager.PageSize)
 	}
 
-	if a.Title != "" {
-		db = db.Where("title = ?", a.Title)
+	db = db.Preload("Tags", "is_del = ?", 0)
+
+	if a.State == 2 {
+		db = db.Where("state IN (0,1)")
+	} else {
+		db = db.Where("state = ?", a.State)
 	}
 
-	db = db.Where("state = ?", a.State)
-
-	if err = db.Find(&articles).Error; err != nil {
-		return nil, err
+	if err = db.Where(&ArticleWithTags{}).Find(&articles).Error; err != nil {
+		return ArticleList{}, err
 	}
 
-	return articles, nil
+	return ArticleList{articles, pager}, nil
 }

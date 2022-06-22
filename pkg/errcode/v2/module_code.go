@@ -4,14 +4,14 @@
  * Created At: Monday, 2022/05/30 , 23:56:41                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Sunday, 2022/06/12 , 09:59:00                                *
+ * Last Modified: Wednesday, 2022/06/22 , 04:49:52                             *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
  * Date      	By	Comments                                                   *
  * ----------	---	---------------------------------------------------------  *
  */
-package errcode
+package errcode2
 
 var (
 	ErrorGetTagListFail = NewError(20010001, "failed getting tags list")
@@ -25,7 +25,14 @@ var (
 	ErrorUpdateArticleFail  = NewError(20010008, "failed updating an article")
 	ErrorDeleteArticleFail  = NewError(20010009, "failed deleting an article")
 	ErrorCountArticleFail   = NewError(20010010, "failed counting articles")
-	ErrorGetArticleFail = NewError(20010011, "failed getting an article")
+	ErrorGetArticleFail     = NewError(20010011, "failed getting an article")
 
-	ErrorUploadFileFailed = NewError(2003001,"failed uploading a file")
+	ErrorGetArticleTagListFail = NewError(20010012, "failed getting article_tags list")
+	ErrorCreateArticleTagFail  = NewError(20010013, "failed creating an article_tag")
+	ErrorUpdateArticleTagFail  = NewError(20010014, "failed updating an article_tag")
+	ErrorDeleteArticleTagFail  = NewError(20010015, "failed deleting an article_tag")
+	ErrorCountArticleTagFail   = NewError(20010016, "failed counting article_tags")
+	ErrorGetArticleTagFail     = NewError(20010017, "failed getting an article_tag")
+
+	ErrorUploadFileFailed = NewError(2003001, "failed uploading a file")
 )

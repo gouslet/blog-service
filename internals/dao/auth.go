@@ -4,7 +4,7 @@
  * Created At: Tuesday, 2022/06/7 , 10:15:07                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Tuesday, 2022/06/7 , 10:16:46                                *
+ * Last Modified: Wednesday, 2022/06/22 , 07:08:12                             *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -13,14 +13,23 @@
  */
 package dao
 
-import "go_start/blog_service/internals/model"
+import (
+	"go_start/blog_service/internals/model"
+	"go_start/blog_service/pkg/errcode"
 
-func (d *Dao)GetAuth(appKey,appSecret string)(model.Auth,error) {
+	"github.com/elchn/errors"
+	"gorm.io/gorm"
+)
+
+func (d *Dao) GetAuth(appKey, appSecret string) (model.Auth, error) {
 	auth := model.Auth{
-		AppKey: appKey,
+		AppKey:    appKey,
 		AppSecret: appSecret,
 	}
 
-	return auth.Get(d.engine)
+	a, err := auth.Get(d.engine)
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return model.Auth{}, errors.WithCode(errcode.ErrAuthNotFound, "auth {key: %q, secret: %q} not found", appKey, appSecret)
+	}
+	return a, nil
 }
-

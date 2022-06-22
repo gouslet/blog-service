@@ -1,6 +1,6 @@
 Server:
   RunMode: debug
-  HttpPort: 8000
+  HttpPort: 8080
   ReadTimeout: 60
   WriteTimeout: 60
 
@@ -11,7 +11,7 @@ App:
   DefaultPageSize: 10
   MaxPageSize: 100
   UploadSavePath: storage/uploads # 上传文件的保存位置
-  UploadServerUrl: http://127.0.0.1:8000/static # 上传文件后用于展示的文件服务地址
+  UploadServerUrl: http://127.0.0.1:8080/static # 上传文件后用于展示的文件服务地址
   UploadImageMaxSize: 5 # 上传文件所允许的最大空间大小，单位：MB
   UploadImageAllowExts: # 上传文件所允许的文件后缀
     - .jpg

@@ -4,7 +4,7 @@
  * Created At: Friday, 2022/06/3 , 15:59:07                                    *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Friday, 2022/06/3 , 16:40:23                                 *
+ * Last Modified: Tuesday, 2022/06/21 , 15:08:40                               *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -27,24 +27,24 @@ func TestFieldTag(t *testing.T) {
 	}{
 		{
 			`{
-				"modified_by": "xAtzU",
+				"updated_by": "xAtzU",
 				"state": 0,
 				"name": "Ukqcjl Ljcwlcxso Wjkwa Hmwcdlf Svfxqjcx Huwqpu Cqm"
 			}`,
 			Model{
-				ModifiedBy: "xAtzU",
+				UpdatedBy: "xAtzU",
 				// State:      0,
 				// Name:       "Ukqcjl Ljcwlcxso Wjkwa Hmwcdlf Svfxqjcx Huwqpu Cqm",
 			},
 		},
 		{
 			`{
-				"modified_by": "M%a",
+				"updated_by": "M%a",
 				"state": 0,
 				"name": "Ukqcjl Ljcwlcxso Wjkwa Hmwcdlf Svfxqjcx Huwqpu Cqm"
 			}`,
 			Model{
-				ModifiedBy: "M%a",
+				UpdatedBy: "M%a",
 				// State:      0,
 				// Name:       "Ukqcjl Ljcwlcxso Wjkwa Hmwcdlf Svfxqjcx Huwqpu Cqm",
 			},

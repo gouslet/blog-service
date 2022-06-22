@@ -4,7 +4,7 @@
  * Created At: Tuesday, 2022/06/7 , 10:01:47                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Wednesday, 2022/06/8 , 10:14:34                              *
+ * Last Modified: Monday, 2022/06/20 , 07:11:16                                *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -50,8 +50,8 @@ func JWT() gin.HandlerFunc {
 		}
 
 		if ecode != errcode.Success {
-			response := app.NewResponse(ctx)
-			response.ToErrorResponse(ecode)
+			// response := app.NewResponse(ctx)
+			// response.ToErrorResponse(ecode)
 			ctx.Abort()
 			return
 		}

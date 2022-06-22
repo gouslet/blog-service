@@ -4,7 +4,7 @@
  * Created At: Tuesday, 2022/06/7 , 09:55:08                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Tuesday, 2022/06/7 , 11:56:46                                *
+ * Last Modified: Wednesday, 2022/06/22 , 07:20:28                             *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -15,9 +15,11 @@ package app
 
 import (
 	"go_start/blog_service/global"
+	"go_start/blog_service/pkg/errcode"
 	"go_start/blog_service/pkg/util"
 	"time"
 
+	"github.com/elchn/errors"
 	jwt "github.com/golang-jwt/jwt/v4"
 )
 
@@ -43,6 +45,9 @@ func GenerateToken(appKey, appSecret string) (string, error) {
 
 	tokenClaims := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	token, err := tokenClaims.SignedString(GetJWTSecret())
+	if err != nil {
+		return "", errors.WrapC(err, errcode.UnauthorizedTokenGenerate, err.Error())
+	}
 
 	return token, err
 }

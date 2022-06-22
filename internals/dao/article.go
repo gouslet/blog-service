@@ -4,7 +4,7 @@
  * Created At: Thursday, 2022/06/2 , 23:46:48                                  *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Sunday, 2022/06/12 , 09:52:52                                *
+ * Last Modified: Tuesday, 2022/06/21 , 16:32:46                               *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -17,52 +17,63 @@ package dao
 import (
 	"go_start/blog_service/internals/model"
 	"go_start/blog_service/pkg/app"
+	"go_start/blog_service/pkg/errcode"
+
+	"github.com/elchn/errors"
+
+	"gorm.io/gorm"
 )
 
-func (d *Dao) GetArticle(id uint32, title string, state uint8) (*model.Article, error) {
+func (d *Dao) GetArticle(id uint32) (model.ArticleWithTags, error) {
 	article := model.Article{
-		Model: &model.Model{
+		Model: model.Model{
 			ID: id,
 		},
-		Title: title,
-		State: state,
+	}
+	awt, err := article.Get(d.engine)
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return model.ArticleWithTags{}, errors.WithCode(errcode.ErrArticleNotFound, "article with id %v does not exist", id)
 	}
 
-	return article.Get(d.engine)
+	return awt, nil
 }
 
-func (d *Dao) GetArticleList(title string, state uint8, page, pageSize int) ([]*model.Article, error) {
-	article := model.Article{Title: title, State: state}
-	pageOffSet := app.GetPageOffSet(page, pageSize)
+func (d *Dao) GetArticleList(state uint8, pager *app.Pager) (model.ArticleList, error) {
+	article := model.Article{State: state}
 
-	return article.List(d.engine, pageOffSet, pageSize)
+	return article.List(d.engine, pager)
 }
 
-func (d *Dao) CountArticle(title string, state uint8) (int64, error) {
-	articles := model.Article{Title: title, State: state}
+func (d *Dao) CountArticle(state uint8) (int64, error) {
+	articles := model.Article{State: state}
 
 	return articles.Count(d.engine)
 }
 
-func (d *Dao) CreateArticle(title string, state uint8, createdBy string) error {
+func (d *Dao) CreateArticle(title, desc, content, coverImageUrl, createdBy string) (model.ArticleWithTags, error) {
 	articles := model.Article{
-		Title: title,
-		State: state,
-		Model: &model.Model{CreatedBy: createdBy},
+		Title:         title,
+		Desc:          desc,
+		Content:       content,
+		CoverImageUrl: coverImageUrl,
+		Model: model.Model{
+			CreatedBy: createdBy,
+		},
 	}
 
 	return articles.Create(d.engine)
 }
 
-func (d *Dao) UpdateArticle(id uint32, title, desc, content, cover_image_url string, state uint8, modifiedBy string) error {
+func (d *Dao) UpdateArticle(id uint32, title, desc, content, cover_image_url string, state uint8, modifiedBy string) (model.ArticleWithTags, error) {
 	articles := model.Article{
-		Model: &model.Model{
+		Model: model.Model{
 			ID: id,
 		},
 	}
 	values := map[string]any{
-		"state":       state,
-		"modified_by": modifiedBy,
+		"state":      state,
+		"updated_by": modifiedBy,
 	}
 	if title != "" {
 		values["title"] = title
@@ -76,14 +87,23 @@ func (d *Dao) UpdateArticle(id uint32, title, desc, content, cover_image_url str
 	if cover_image_url != "" {
 		values["cover_image_url"] = cover_image_url
 	}
-
-	return articles.Update(d.engine, values)
-}
-
-func (d *Dao) DeleteArticle(id uint32) error {
-	articles := model.Article{
-		Model: &model.Model{ID: id},
+	article, err := articles.Update(d.engine, values)
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return article, errors.WithCode(errcode.ErrArticleNotFound, "article with id %v does not exist", id)
 	}
 
-	return articles.Delete(d.engine)
+	return article, nil
+}
+
+func (d *Dao) DeleteArticle(id uint32) (model.ArticleWithTags, error) {
+	articles := model.Article{
+		Model: model.Model{ID: id},
+	}
+	article, err := articles.Delete(d.engine)
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return article, errors.WithCode(errcode.ErrArticleNotFound, "article with id %v does not exist", id)
+	}
+
+	return article, nil
 }

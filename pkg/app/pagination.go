@@ -1,10 +1,10 @@
 /*
  * File: \pkg\app\pagination.go                                                *
- * Project: blog_service                                                       *
+ * Project: blog-service                                                       *
  * Created At: Monday, 2022/05/30 , 22:03:17                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Tuesday, 2022/05/31 , 00:29:09                               *
+ * Last Modified: Thursday, 2022/06/16 , 17:17:29                              *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *

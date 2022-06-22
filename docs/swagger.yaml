@@ -1,8 +1,103 @@
 basePath: /api/v1
 definitions:
-  errcode.Error:
+  app.ErrorResponse:
+    properties:
+      code:
+        description: Code defines the business error code.
+        type: integer
+      errors:
+        $ref: '#/definitions/errors.MyError'
+      message:
+        description: |-
+          Message contains the detail of this message.
+          This message is suitable to be exposed to external
+        type: string
     type: object
-  model.Article:
+  app.Pager:
+    properties:
+      page:
+        type: integer
+      page_size:
+        type: integer
+      total_rows:
+        type: integer
+    type: object
+  app.SuccessResponse:
+    properties:
+      code:
+        description: Code defines the business error code.
+        type: integer
+      data:
+        description: Reference returns the reference document which maybe useful to
+          solve this error.
+        type: any
+      message:
+        description: |-
+          Message contains the detail of this message.
+          This message is suitable to be exposed to external
+        type: string
+    type: object
+  errors.MyError:
+    properties:
+      code:
+        description: Code defines the business error code.
+        type: integer
+      details:
+        items:
+          $ref: '#/definitions/errors.MyError'
+        type: array
+      message:
+        description: |-
+          Message contains the detail of this message.
+          This message is suitable to be exposed to external
+        type: string
+      specific:
+        type: string
+    type: object
+  gin.H:
+    additionalProperties:
+      type: any
+    type: object
+  model.ArticleList:
+    properties:
+      articles:
+        items:
+          $ref: '#/definitions/model.ArticleWithTags'
+        type: array
+      pager:
+        $ref: '#/definitions/app.Pager'
+    type: object
+  model.ArticleTag:
+    properties:
+      article_id:
+        type: integer
+      created_at:
+        type: integer
+      created_by:
+        type: string
+      deleted_at:
+        type: integer
+      id:
+        type: integer
+      is_del:
+        type: integer
+      tag_id:
+        type: integer
+      updated_at:
+        type: integer
+      updated_by:
+        type: string
+    type: object
+  model.ArticleTagList:
+    properties:
+      article_tags:
+        items:
+          $ref: '#/definitions/model.ArticleTag'
+        type: array
+      pager:
+        $ref: '#/definitions/app.Pager'
+    type: object
+  model.ArticleWithTags:
     properties:
       content:
         type: string
@@ -20,13 +115,17 @@ definitions:
         type: integer
       is_del:
         type: integer
-      modified_at:
-        type: integer
-      modified_by:
-        type: string
       state:
         type: integer
+      tags:
+        items:
+          $ref: '#/definitions/model.Tag'
+        type: array
       title:
+        type: string
+      updated_at:
+        type: integer
+      updated_by:
         type: string
     type: object
   model.Tag:
@@ -41,14 +140,23 @@ definitions:
         type: integer
       is_del:
         type: integer
-      modified_at:
-        type: integer
-      modified_by:
-        type: string
       name:
         type: string
       state:
         type: integer
+      updated_at:
+        type: integer
+      updated_by:
+        type: string
+    type: object
+  model.TagList:
+    properties:
+      pager:
+        $ref: '#/definitions/app.Pager'
+      tags:
+        items:
+          $ref: '#/definitions/model.Tag'
+        type: array
     type: object
 host: https://blog-service-poiyyort.cloud.okteto.net
 info:
@@ -61,12 +169,7 @@ paths:
   /api/v1/articles:
     get:
       parameters:
-      - description: article title
-        in: query
-        maxLength: 100
-        name: title
-        type: string
-      - default: 1
+      - default: 2
         description: state
         in: query
         name: state
@@ -85,16 +188,23 @@ paths:
         "200":
           description: succeeded
           schema:
-            $ref: '#/definitions/model.Article'
+            allOf:
+            - $ref: '#/definitions/app.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.ArticleList'
+              type: object
         "400":
           description: request errors
           schema:
-            $ref: '#/definitions/errcode.Error'
+            $ref: '#/definitions/app.ErrorResponse'
         "500":
           description: internal errors
           schema:
-            $ref: '#/definitions/errcode.Error'
+            $ref: '#/definitions/app.ErrorResponse'
       summary: get a list of articles
+      tags:
+      - article
     post:
       parameters:
       - description: Article title
@@ -145,16 +255,23 @@ paths:
         "200":
           description: succeeded
           schema:
-            $ref: '#/definitions/model.Article'
+            allOf:
+            - $ref: '#/definitions/app.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.ArticleWithTags'
+              type: object
         "400":
           description: request errors
           schema:
-            $ref: '#/definitions/errcode.Error'
+            $ref: '#/definitions/app.ErrorResponse'
         "500":
           description: internal errors
           schema:
-            $ref: '#/definitions/errcode.Error'
+            $ref: '#/definitions/app.ErrorResponse'
       summary: create a new article
+      tags:
+      - article
   /api/v1/articles/{id}:
     delete:
       parameters:
@@ -163,27 +280,29 @@ paths:
         name: id
         required: true
         type: integer
-      - description: article title
-        in: query
-        maxLength: 100
-        name: title
-        type: string
       produces:
       - application/json
       responses:
         "200":
           description: succeeded
           schema:
-            $ref: '#/definitions/model.Article'
+            allOf:
+            - $ref: '#/definitions/app.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.ArticleWithTags'
+              type: object
         "400":
           description: request errors
           schema:
-            $ref: '#/definitions/errcode.Error'
+            $ref: '#/definitions/app.ErrorResponse'
         "500":
           description: internal errors
           schema:
-            $ref: '#/definitions/errcode.Error'
+            $ref: '#/definitions/app.ErrorResponse'
       summary: delete an article with given title or id
+      tags:
+      - article
     get:
       parameters:
       - description: article id
@@ -202,16 +321,23 @@ paths:
         "200":
           description: succeeded
           schema:
-            $ref: '#/definitions/model.Article'
+            allOf:
+            - $ref: '#/definitions/app.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.ArticleWithTags'
+              type: object
         "400":
           description: request errors
           schema:
-            $ref: '#/definitions/errcode.Error'
+            $ref: '#/definitions/app.ErrorResponse'
         "500":
           description: internal errors
           schema:
-            $ref: '#/definitions/errcode.Error'
+            $ref: '#/definitions/app.ErrorResponse'
       summary: get an article with its id
+      tags:
+      - article
     put:
       parameters:
       - description: article id
@@ -263,26 +389,217 @@ paths:
         "200":
           description: succeeded
           schema:
-            $ref: '#/definitions/model.Article'
+            allOf:
+            - $ref: '#/definitions/app.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.ArticleWithTags'
+              type: object
         "400":
           description: request errors
           schema:
-            $ref: '#/definitions/errcode.Error'
+            $ref: '#/definitions/app.ErrorResponse'
         "500":
           description: internal errors
           schema:
-            $ref: '#/definitions/errcode.Error'
+            $ref: '#/definitions/app.ErrorResponse'
       summary: update an article
+      tags:
+      - article
+  /api/v1/articletags:
+    get:
+      parameters:
+      - description: page index
+        in: query
+        name: page
+        type: integer
+      - description: size per page
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: succeeded
+          schema:
+            allOf:
+            - $ref: '#/definitions/app.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.ArticleTagList'
+              type: object
+        "400":
+          description: request errors
+          schema:
+            $ref: '#/definitions/app.ErrorResponse'
+        "500":
+          description: internal errors
+          schema:
+            $ref: '#/definitions/app.ErrorResponse'
+      summary: get a list of articletags
+      tags:
+      - articletag
+    post:
+      parameters:
+      - description: article id
+        in: body
+        name: article_id
+        required: true
+        schema:
+          type: integer
+      - description: tag id
+        in: body
+        name: tag_id
+        required: true
+        schema:
+          type: integer
+      - description: creator
+        in: body
+        maxLength: 100
+        minLength: 3
+        name: created_by
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: succeeded
+          schema:
+            allOf:
+            - $ref: '#/definitions/app.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.ArticleTag'
+              type: object
+        "400":
+          description: request errors
+          schema:
+            $ref: '#/definitions/app.ErrorResponse'
+        "500":
+          description: internal errors
+          schema:
+            $ref: '#/definitions/app.ErrorResponse'
+      summary: create a new articletag
+      tags:
+      - articletag
+  /api/v1/articletags/{id}:
+    delete:
+      parameters:
+      - description: articletag id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: succeeded
+          schema:
+            allOf:
+            - $ref: '#/definitions/app.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.ArticleTag'
+              type: object
+        "400":
+          description: request errors
+          schema:
+            $ref: '#/definitions/app.ErrorResponse'
+        "500":
+          description: internal errors
+          schema:
+            $ref: '#/definitions/app.ErrorResponse'
+      summary: delete an articletag with given title or id
+      tags:
+      - articletag
+    get:
+      parameters:
+      - description: articletag id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: succeeded
+          schema:
+            allOf:
+            - $ref: '#/definitions/app.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.ArticleTag'
+              type: object
+        "400":
+          description: request errors
+          schema:
+            $ref: '#/definitions/app.ErrorResponse'
+        "500":
+          description: internal errors
+          schema:
+            $ref: '#/definitions/app.ErrorResponse'
+      summary: get an articletag with its id
+      tags:
+      - articletag
+    put:
+      parameters:
+      - description: articletag id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: article id
+        in: body
+        name: article_id
+        required: true
+        schema:
+          type: integer
+      - description: tag id
+        in: body
+        name: tag_id
+        required: true
+        schema:
+          type: integer
+      - description: creator
+        in: body
+        maxLength: 100
+        minLength: 3
+        name: updated_by
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: succeeded
+          schema:
+            allOf:
+            - $ref: '#/definitions/app.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.ArticleTag'
+              type: object
+        "400":
+          description: request errors
+          schema:
+            $ref: '#/definitions/app.ErrorResponse'
+        "500":
+          description: internal errors
+          schema:
+            $ref: '#/definitions/app.ErrorResponse'
+      summary: update an articletag
+      tags:
+      - articletag
   /api/v1/tags:
     get:
       parameters:
-      - description: tag name
-        in: query
-        maxLength: 100
-        minLength: 3
-        name: name
-        type: string
-      - default: 1
+      - default: 2
         description: state
         in: query
         name: state
@@ -301,16 +618,23 @@ paths:
         "200":
           description: succeeded
           schema:
-            $ref: '#/definitions/model.Tag'
+            allOf:
+            - $ref: '#/definitions/app.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.TagList'
+              type: object
         "400":
           description: request errors
           schema:
-            $ref: '#/definitions/errcode.Error'
+            $ref: '#/definitions/app.ErrorResponse'
         "500":
           description: internal errors
           schema:
-            $ref: '#/definitions/errcode.Error'
+            $ref: '#/definitions/app.ErrorResponse'
       summary: get a list of tags
+      tags:
+      - tags
     post:
       parameters:
       - description: tag name
@@ -341,16 +665,23 @@ paths:
         "200":
           description: succeeded
           schema:
-            $ref: '#/definitions/model.Tag'
+            allOf:
+            - $ref: '#/definitions/app.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Tag'
+              type: object
         "400":
           description: request errors
           schema:
-            $ref: '#/definitions/errcode.Error'
+            $ref: '#/definitions/app.ErrorResponse'
         "500":
           description: internal errors
           schema:
-            $ref: '#/definitions/errcode.Error'
+            $ref: '#/definitions/app.ErrorResponse'
       summary: create a new tag
+      tags:
+      - tags
   /api/v1/tags/{id}:
     delete:
       parameters:
@@ -365,16 +696,23 @@ paths:
         "200":
           description: succeeded
           schema:
-            $ref: '#/definitions/model.Tag'
+            allOf:
+            - $ref: '#/definitions/app.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Tag'
+              type: object
         "400":
           description: request errors
           schema:
-            $ref: '#/definitions/errcode.Error'
+            $ref: '#/definitions/app.ErrorResponse'
         "500":
           description: internal errors
           schema:
-            $ref: '#/definitions/errcode.Error'
+            $ref: '#/definitions/app.ErrorResponse'
       summary: delete a tag
+      tags:
+      - tags
     put:
       parameters:
       - description: tag id
@@ -399,7 +737,7 @@ paths:
         in: body
         maxLength: 100
         minLength: 3
-        name: modified_by
+        name: updated_by
         required: true
         schema:
           type: string
@@ -409,14 +747,98 @@ paths:
         "200":
           description: succeeded
           schema:
-            $ref: '#/definitions/model.Tag'
+            allOf:
+            - $ref: '#/definitions/app.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Tag'
+              type: object
         "400":
           description: request errors
           schema:
-            $ref: '#/definitions/errcode.Error'
+            $ref: '#/definitions/app.ErrorResponse'
         "500":
           description: internal errors
           schema:
-            $ref: '#/definitions/errcode.Error'
+            $ref: '#/definitions/app.ErrorResponse'
       summary: update a tag
+      tags:
+      - tags
+  /api/v1/tas/{id}:
+    get:
+      parameters:
+      - description: article id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - default: 1
+        description: state
+        in: query
+        name: state
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: succeeded
+          schema:
+            allOf:
+            - $ref: '#/definitions/app.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Tag'
+              type: object
+        "400":
+          description: request errors
+          schema:
+            $ref: '#/definitions/app.ErrorResponse'
+        "500":
+          description: internal errors
+          schema:
+            $ref: '#/definitions/app.ErrorResponse'
+      summary: get a tag with its id
+      tags:
+      - tags
+  /upload/file:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - default: 1
+        description: file type
+        in: body
+        name: type
+        required: true
+        schema:
+          type: integer
+      - description: file
+        in: body
+        name: file
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: succeeded
+          schema:
+            allOf:
+            - $ref: '#/definitions/app.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/gin.H'
+              type: object
+        "400":
+          description: request errors
+          schema:
+            $ref: '#/definitions/app.ErrorResponse'
+        "500":
+          description: internal errors
+          schema:
+            $ref: '#/definitions/app.ErrorResponse'
+      summary: upload a file and get access url back
+      tags:
+      - upload
 swagger: "2.0"

@@ -4,7 +4,7 @@
  * Created At: Friday, 2022/05/27 , 20:47:27                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Wednesday, 2022/06/8 , 08:49:33                              *
+ * Last Modified: Tuesday, 2022/06/21 , 16:05:51                               *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -54,7 +54,7 @@ func init() {
 	}
 }
 
-//go:generate swag init --parseDependency --parseInternal -parseDepth=6
+//go:generate swag init --parseDependency --parseInternal
 
 // @title blog service
 // @version v0.0
@@ -78,21 +78,21 @@ func main() {
 		err := s.ListenAndServe()
 
 		if err != nil && err != http.ErrServerClosed {
-			log.Fatalf("s.ListenAndServe err: %v",err)
+			log.Fatalf("s.ListenAndServe err: %v", err)
 		}
 	}()
 
-	quit := make(chan os.Signal,1)
-	signal.Notify(quit,syscall.SIGINT,syscall.SIGTERM)
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit // waiting for interrupt signals
 	log.Println("Shuting down server...")
 
-	ctx,cancel := context.WithTimeout(context.Background(),5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 
 	defer cancel()
 
-	if err := s.Shutdown(ctx);err != nil {
-		log.Fatal("Server forced to shutdown: ",err)
+	if err := s.Shutdown(ctx); err != nil {
+		log.Fatal("Server forced to shutdown: ", err)
 	}
 
 	log.Println("Server exiting")

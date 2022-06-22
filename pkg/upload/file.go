@@ -4,7 +4,7 @@
  * Created At: Monday, 2022/06/6 , 14:41:29                                    *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Monday, 2022/06/6 , 16:28:50                                 *
+ * Last Modified: Wednesday, 2022/06/22 , 09:52:32                             *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -15,6 +15,7 @@ package upload
 
 import (
 	"go_start/blog_service/global"
+	"go_start/blog_service/pkg/util"
 	"io"
 	"io/ioutil"
 	"mime/multipart"
@@ -31,6 +32,8 @@ const TypeImage = iota + 1
 func GetFileName(name string) string {
 	ext := GetFileExt(name)
 	fileName := strings.TrimSuffix(name, ext)
+	fileName = util.EncodeMD5(fileName)
+
 	return fileName + ext
 }
 
@@ -41,13 +44,14 @@ func GetFileExt(name string) string {
 
 // GetSavePath return the path to save the file
 func GetSavePath() string {
-	return global.AppSetting.UploadSavePath
+	path := global.AppSetting.UploadSavePath
+	return path
 }
 
 // CheckSavePath check the existence of the dst path
 func CheckSavePath(dst string) bool {
 	_, err := os.Stat(dst)
-	return os.IsNotExist(err)
+	return os.IsExist(err)
 }
 
 // CheckPermission the permission of the dst path

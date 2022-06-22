@@ -1,10 +1,38 @@
 /*
+ * File: /internals/model/model.go                                             *
+ * Project: blog-service                                                       *
+ * Created At: Sunday, 2022/06/12 , 15:52:13                                   *
+ * Author: elchn                                                               *
+ * -----                                                                       *
+ * Last Modified: Tuesday, 2022/06/21 , 15:09:00                               *
+ * Modified By: elchn                                                          *
+ * -----                                                                       *
+ * HISTORY:                                                                    *
+ * Date      	By	Comments                                                   *
+ * ----------	---	---------------------------------------------------------  *
+ */
+
+/*
+ * File: /internals/model/model.go                                             *
+ * Project: blog-service                                                       *
+ * Created At: Sunday, 2022/06/12 , 15:52:13                                   *
+ * Author: elchn                                                               *
+ * -----                                                                       *
+ * Last Modified: Tuesday, 2022/06/21 , 15:08:40                               *
+ * Modified By: elchn                                                          *
+ * -----                                                                       *
+ * HISTORY:                                                                    *
+ * Date      	By	Comments                                                   *
+ * ----------	---	---------------------------------------------------------  *
+ */
+
+/*
  * File: \internal\model\model.go                                              *
  * Project: blog-service                                                       *
  * Created At: Sunday, 2022/05/29 , 00:25:51                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Friday, 2022/06/3 , 15:15:46                                 *
+ * Last Modified: Tuesday, 2022/06/21 , 15:07:59                               *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
@@ -28,13 +56,13 @@ import (
 
 // Model common model
 type Model struct {
-	ID         uint32                `gorm:"primary_key" json:"id"`
-	CreatedBy  string                `json:"created_by"`
-	ModifiedBy string                `json:"modified_by"`
-	CreatedAt  uint32                `json:"created_at"`
-	ModifiedAt uint32                `json:"modified_at"`
-	DeletedAt  uint32                `json:"deleted_at"`
-	IsDel      soft_delete.DeletedAt `json:"is_del" gorm:"softDelete:flag"`
+	ID        uint32                `json:"id" gorm:"primary_key"`
+	CreatedBy string                `json:"created_by"`
+	UpdatedBy string                `json:"updated_by"`
+	CreatedAt uint32                `json:"created_at"`
+	UpdatedAt uint32                `json:"updated_at"`
+	IsDel     soft_delete.DeletedAt `json:"is_del" gorm:"softDelete:flag,DeletedAtField:DeletedAt"`
+	DeletedAt soft_delete.DeletedAt `json:"deleted_at" gorm:"uniqueIndex:udx_name"`
 }
 
 func NewDBEngine(databaseSetting *setting.DatabaseSettings) (*gorm.DB, error) {
@@ -45,15 +73,15 @@ func NewDBEngine(databaseSetting *setting.DatabaseSettings) (*gorm.DB, error) {
 		databaseSetting.DBName,
 		databaseSetting.Charset,
 		databaseSetting.ParseTime)
+	newLogger := logger.Default
+	if global.ServerSetting.RunMode == "debug" {
+		newLogger = newLogger.LogMode(logger.Info)
+	}
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
-		Logger: logger.Default,
+		Logger: newLogger,
 	})
 	if err != nil {
 		return nil, err
-	}
-
-	if global.ServerSetting.RunMode == "debug" {
-		db.Logger.LogMode(logger.Info)
 	}
 
 	if sdb, err := db.DB(); err != nil {
@@ -73,7 +101,7 @@ func NewDBEngine(databaseSetting *setting.DatabaseSettings) (*gorm.DB, error) {
 func updateTimeStampForCreateCallback(db *gorm.DB) {
 	statement := db.Statement
 	context := statement.Context
-	for _, filed := range []string{"ModifiedAt", "CreatedAt"} {
+	for _, filed := range []string{"UpdatedAt", "CreatedAt"} {
 		timeField := statement.Schema.LookUpField(filed)
 		if !timeField.NotNull {
 			reflectValue := statement.ReflectValue

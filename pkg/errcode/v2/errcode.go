@@ -1,21 +1,20 @@
 /*
  * File: \pkg\errcode\errcode.go                                               *
- * Project: blog_service                                                       *
+ * Project: blog-service                                                       *
  * Created At: Sunday, 2022/05/29 , 16:17:51                                   *
  * Author: elchn                                                               *
  * -----                                                                       *
- * Last Modified: Monday, 2022/05/30 , 17:48:25                                *
+ * Last Modified: Wednesday, 2022/06/22 , 04:49:55                             *
  * Modified By: elchn                                                          *
  * -----                                                                       *
  * HISTORY:                                                                    *
  * Date      	By	Comments                                                   *
  * ----------	---	---------------------------------------------------------  *
  */
-package errcode
+package errcode2
 
 import (
 	"fmt"
-	"net/http"
 )
 
 type Error struct {
@@ -63,19 +62,19 @@ func (e *Error) WithDetails(details ...string) *Error {
 	return &newError
 }
 
-func (e *Error) StatusCode() int {
-	switch e.code {
-	case Success.code:
-		return http.StatusOK
-	case ServerError.code:
-		return http.StatusInternalServerError
-	case InvalidParams.code:
-		return http.StatusBadRequest
-	case NotFound.code:
-		return http.StatusNotFound
-	case TooManyRequests.code:
-		return http.StatusTooManyRequests
-	}
+// func (e *Error) StatusCode() int {
+// 	switch e.code {
+// 	case Success.code:
+// 		return http.StatusOK
+// 	case ServerError.code:
+// 		return http.StatusInternalServerError
+// 	case InvalidParams.code:
+// 		return http.StatusBadRequest
+// 	case NotFound.code:
+// 		return http.StatusNotFound
+// 	case TooManyRequests.code:
+// 		return http.StatusTooManyRequests
+// 	}
 
-	return http.StatusInternalServerError
-}
+// 	return http.StatusInternalServerError
+// }
